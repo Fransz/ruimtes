@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    /* gruvbox black; */
+    background-color: #282828 ;
+
+    /* gruvbox white; */
+    color:#ebdbb2;
+}
+
+button > svg {
+    margin-right:1rem;
+}
