@@ -28,7 +28,7 @@ const NoDay = () => {
 
 const Room = ({ room }) => {
   const cls = classNames(
-    'w-4 h-4 mx-2 border rounded-lg',
+    'w-4 h-4 mx-2 border',
     {
       'border-red bg-red': room === 'rodekamer',
       'border-green bg-green': room === 'groenekamer',
