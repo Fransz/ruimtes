@@ -1,13 +1,16 @@
-import { createRoot } from "react-dom/client";
-import { StrictMode } from "react";
+import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react'
 
-import "./index.css";
+import './index.css'
 
-import App from "./components/App";
+import App from './components/App'
+import { Provider } from './context/rresv'
 
-const root = createRoot(document.querySelector("#root"));
+const root = createRoot(document.querySelector('#root'))
 root.render(
   <StrictMode>
-    <App />
+    <Provider>
+      <App />
+    </Provider>
   </StrictMode>
-);
+)

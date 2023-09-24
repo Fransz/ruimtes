@@ -1,0 +1,92 @@
+{
+  "rresv": [
+    {
+      "activity": "activity 10",
+      "date": "2023-09-01",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "groene kamer",
+      "id": 1
+    },
+    {
+      "activity": "activity 1",
+      "date": "2023-09-10",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "rode kamer",
+      "id": 2
+    },
+    {
+      "activity": "activity 2",
+      "date": "2023-09-11",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "multiruimte",
+      "id": 3
+    },
+    {
+      "activity": "activity 3",
+      "date": "2023-09-12",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "multiruimte",
+      "id": 4
+    },
+    {
+      "activity": "activity 5",
+      "date": "2023-09-12",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "rode kamer",
+      "id": 5
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "rode kamer",
+      "id": 6
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "groene kamer",
+      "id": 7
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "rose kamer",
+      "id": 8
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "multiruimte",
+      "id": 9
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "huiskamer",
+      "id": 10
+    },
+    {
+      "activity": "activity 10",
+      "date": "2023-09-30",
+      "timestart": "13:00",
+      "timeend": "14:00",
+      "room": "keuken",
+      "id": 11
+    }
+  ]
+}
