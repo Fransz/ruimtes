@@ -12,7 +12,7 @@ const MonthDayRoom = ({ room, roomClickHandler }) => {
   return <div onClick={roomClickHandler} className={cls} />;
 };
 
-const RoomMarker = ({ room, roomClickHandler, ...rest }) => {
+const RoomMarker = ({ room, filterHandler, ...rest }) => {
   const cls = classNames(rest.className, {
     "border-red bg-red": room === "rode kamer",
     "border-green bg-green": room === "groene kamer",
@@ -21,7 +21,7 @@ const RoomMarker = ({ room, roomClickHandler, ...rest }) => {
     "border-blue bg-blue": room === "huiskamer",
     "border-aqua bg-aqua": room === "keuken",
   });
-  return <div onClick={roomClickHandler} className={cls} />;
+  return <div onClick={filterHandler} className={cls} />;
 };
 
 export { RoomMarker };

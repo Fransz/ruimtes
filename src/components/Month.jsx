@@ -23,9 +23,17 @@ const Month = ({ displayDate }) => {
   /**
    * Handler for closing the list.
    */
-  const closeHandler = () => {
+  const closeHandler = (e) => {
     setShowList(!showList);
   };
+
+  /**
+   * Handler for filtering the list.
+   */
+  const filterHandler = (e, r) => {
+    setCurrentRoom(r);
+  };
+
   const first = new Date(
     Date.UTC(displayDate.getFullYear(), displayDate.getMonth(), 1)
   );
@@ -67,6 +75,7 @@ const Month = ({ displayDate }) => {
               room={currentRoom}
               day={currentDay}
               closeHandler={closeHandler}
+              filterHandler={filterHandler}
             />
           </div>
         )}

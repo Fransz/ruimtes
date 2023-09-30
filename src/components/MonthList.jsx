@@ -2,7 +2,7 @@ import useRresvContext from "../hooks/use-rresv-context";
 import { RoomMarker } from "./MonthDayRoom";
 import Button from "./Button";
 
-const MonthList = ({ day, room, closeHandler }) => {
+const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   const { rresvs } = useRresvContext();
 
   const renderedItems = rresvs
@@ -17,14 +17,13 @@ const MonthList = ({ day, room, closeHandler }) => {
     <>
       <h1 className='text-center text-xl'>{`Bezetting op ${day.toLocaleDateString()}`}</h1>
       {room && <h1 className='text-center text-xl'>{room}</h1>}
-      <ListBar closeHandler={closeHandler} />
+      <ListBar closeHandler={closeHandler} filterHandler={filterHandler} />
       <ul>{renderedItems}</ul>
     </>
   );
 };
 
-const ListBar = ({ closeHandler }) => {
-  const filterHandler = (r) => console.log(r);
+const ListBar = ({ closeHandler, filterHandler }) => {
   const rooms = [
     "rode kamer",
     "groene kamer",
@@ -36,7 +35,7 @@ const ListBar = ({ closeHandler }) => {
     return (
       <li key={r}>
         <RoomMarker
-          roomClickHandler={(e) => filterHandler(r)}
+          filterHandler={(e) => filterHandler(e, r)}
           key={r}
           room={r}
           className='mx-1 h-4 w-4 border'
