@@ -1,19 +1,21 @@
-import classNames from 'classnames'
+import MonthDayRoom from './MonthDayRoom'
 
 const dFormat = new Intl.DateTimeFormat('nl-NL', { weekday: 'long' })
 
-const MonthDay = ({ rresvs, date }) => {
+const MonthDay = ({ rresvs, date, dayClickHandler, roomClickHandler }) => {
   const rooms = ['rode kamer', 'groene kamer', 'rose kamer', 'multiruimte', 'huiskamer', 'keuken']
   const rRooms = rooms
     .filter((r) => rresvs.some((rresv) => rresv.room === r))
-    .map((r) => r.replace(' ', ''))
-    .map((r) => <Room key={r} room={r} />)
+    .map((r) => {
+      const rr = r.replace(' ', '')
+      return <MonthDayRoom roomClickHandler={e => roomClickHandler(e, date, r)} key={rr} room={rr} />
+  })
 
   return (
-    <div className='w-[14%] border border-blue'>
+    <div onClick={e => dayClickHandler(e, date)} className='w-[14%] border border-blue'>
       <div className='flex items-baseline justify-between'>
         <div className='ml-3'>{dFormat.format(date)}</div>
-        <div className='mr-3 text-[5rem]'>{date.getDate()}</div>
+        <div className='mr-3 text-[2rem]'>{date.getDate()}</div>
       </div>
       <div className='flex justify-start min-h-[1rem] mb-4'>
         {rRooms}
@@ -25,21 +27,5 @@ const MonthDay = ({ rresvs, date }) => {
 const NoDay = () => {
   return <div className='w-[14%] border border-blue'>&nbsp;</div>
 }
-
-const Room = ({ room }) => {
-  const cls = classNames(
-    'w-4 h-4 mx-2 border rounded-full',
-    {
-      'border-red bg-red': room === 'rodekamer',
-      'border-green bg-green': room === 'groenekamer',
-      'border-purple bg-purple': room === 'rosekamer',
-      'border-yellow bg-yellow': room === 'multiruimte',
-      'border-blue bg-blue': room === 'huiskamer',
-      'border-aqua bg-aqua': room === 'keuken'
-    }
-  )
-  return <div className={cls} />
-}
-
 export { NoDay }
 export default MonthDay
