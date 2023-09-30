@@ -44,7 +44,7 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
           <RoomMarker
             filterHandler={(e) => filterHandler(e, r)}
             key={r}
-            room={r}
+            room={r === curFilter ? r : `dimmed ${r}`}
             className='mx-1 h-4 w-4 border'
           />
         </li>
