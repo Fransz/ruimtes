@@ -66,7 +66,7 @@ const Month = ({ displayDate }) => {
     <>
       <div className='py-6 text-center text-6xl'>{header}</div>
       <div className='flex'>
-        <div className='flex w-[80%] flex-row flex-wrap'>
+        <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
           {befores}
           {days}
         </div>

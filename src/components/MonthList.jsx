@@ -29,7 +29,7 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
 const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
   const filters = [
     <li key='all' onClick={(e) => filterHandler(e, undefined)}>
-      all
+      alle
     </li>,
     ...[
       "rode kamer",

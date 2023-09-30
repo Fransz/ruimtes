@@ -30,7 +30,7 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }) => {
   return (
     <div
       onClick={(e) => dayClickHandler(e, day)}
-      className='w-[14%] border border-blue'
+      className='flex h-[15vh] w-[14%] flex-col justify-between border border-blue'
     >
       <div className='flex items-baseline justify-between'>
         <div className='ml-3'>{dFormat.format(day)}</div>
