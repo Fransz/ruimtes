@@ -1,5 +1,5 @@
 import useRresvContext from "../hooks/use-rresv-context";
-import { RoomMarker } from "./MonthDayRoom";
+import RoomMarker from "./RoomMarker";
 import Button from "./Button";
 
 const MonthList = ({ day, room, closeHandler, filterHandler }) => {
@@ -52,6 +52,9 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
     }),
   ];
 
+  const filterName = (
+    <h1 className='my-2 text-center text-xl'>{curFilter ?? "allemaal"}</h1>
+  );
   return (
     <>
       <div className='my-2'>
@@ -60,7 +63,7 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
           <Button onClick={closeHandler}>sluit</Button>
         </div>
         <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
-        {curFilter && <h1 className='my-2 text-center text-xl'>{curFilter}</h1>}
+        {filterName}
       </div>
     </>
   );
@@ -70,7 +73,14 @@ const MonthListItem = ({ rresv }) => {
   return (
     <li className='mt-4 border-t pt-2'>
       <div>{rresv.activity}</div>
-      <div>{rresv.room}</div>
+      <div className='flex items-center'>
+        <RoomMarker
+          room={rresv.room}
+          filterHandler={(e) => e}
+          className='mx-1 h-4 w-4 rounded-full border'
+        />
+        {rresv.room}
+      </div>
       <div>
         <span className='pr-2'>van:&nbsp;</span>
         <span>{rresv.timestart}</span>

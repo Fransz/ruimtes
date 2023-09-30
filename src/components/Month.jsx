@@ -13,6 +13,7 @@ const Month = ({ displayDate }) => {
     setCurrentDay(d);
     setCurrentRoom(undefined);
   };
+
   const roomClickHandler = (e, d, r) => {
     setShowList(true);
     setCurrentDay(d);
