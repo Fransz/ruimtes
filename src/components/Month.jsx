@@ -5,19 +5,19 @@ import MonthList from './MonthList'
 
 const Month = ({ displayDate }) => {
   const [showList, setShowList] = useState(false)
-  const [currentDate, setCurrentDate] = useState(null)
+  const [currentDay, setCurrentDay] = useState(null)
   const [currentRoom, setCurrentRoom] = useState(null)
 
   const { rresvs } = useRresvContext()
 
   const dayClickHandler = (e, d) => {
     setShowList(true)
-    setCurrentDate(d)
+    setCurrentDay(d)
     setCurrentRoom("rode kamer")
   }
   const roomClickHandler = (e, d, r) => {
     setShowList(true)
-    setCurrentDate(d)
+    setCurrentDay(d)
     setCurrentRoom(r)
     e.stopPropagation()
   }
@@ -35,27 +35,13 @@ const Month = ({ displayDate }) => {
   // Rresvs this month;
   const mRresvs = rresvs.filter((r) => r.date >= first && r.date <= last)
 
-  // reservation on currentday/currentroom
-  const cRresvs = () => rresvs.filter(r =>
-    r.date.getTime() === currentDate.getTime() && r.room.replace(' ','') === currentRoom.replace(' ', '')
-  )
-
   // All days.
   let days = Array.from(
     new Array(last.getDate()),
     (_, i) => new Date(Date.UTC(first.getFullYear(), first.getMonth(), i + 1))
+  ).map((d, i) =>
+    <MonthDay key={i} day={d} roomClickHandler={roomClickHandler} dayClickHandler={dayClickHandler} />
   )
-  days = days.map((d, i) => {
-    return (
-      <MonthDay
-        key={i}
-        rresvs={mRresvs.filter((r) => r.date.getTime() === d.getTime())}
-        date={d}
-        roomClickHandler={roomClickHandler}
-        dayClickHandler={dayClickHandler}
-      />
-    )
-  })
 
   const fmt = Intl.DateTimeFormat('nl-NL', { year: 'numeric', month: 'long' })
   const header = fmt.format(displayDate)
@@ -69,7 +55,7 @@ const Month = ({ displayDate }) => {
           {days}
         </div>
         <div className='w-[20%]'>
-          {showList ? <MonthList rresvs={cRresvs()} room={currentRoom} date={currentDate} /> : null}
+          {showList && <MonthList room={currentRoom} day={currentDay} />}
         </div>
       </div>
     </>
