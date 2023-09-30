@@ -16,33 +16,41 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   return (
     <>
       <h1 className='text-center text-xl'>{`Bezetting op ${day.toLocaleDateString()}`}</h1>
-      {room && <h1 className='text-center text-xl'>{room}</h1>}
-      <ListBar closeHandler={closeHandler} filterHandler={filterHandler} />
+      <ListBar
+        closeHandler={closeHandler}
+        filterHandler={filterHandler}
+        curFilter={room}
+      />
       <ul>{renderedItems}</ul>
     </>
   );
 };
 
-const ListBar = ({ closeHandler, filterHandler }) => {
-  const rooms = [
-    "rode kamer",
-    "groene kamer",
-    "rose kamer",
-    "multiruimte",
-    "huiskamer",
-    "keuken",
-  ].map((r) => {
-    return (
-      <li key={r}>
-        <RoomMarker
-          filterHandler={(e) => filterHandler(e, r)}
-          key={r}
-          room={r}
-          className='mx-1 h-4 w-4 border'
-        />
-      </li>
-    );
-  });
+const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
+  const filters = [
+    <li key='all' onClick={(e) => filterHandler(e, undefined)}>
+      all
+    </li>,
+    ...[
+      "rode kamer",
+      "groene kamer",
+      "rose kamer",
+      "multiruimte",
+      "huiskamer",
+      "keuken",
+    ].map((r) => {
+      return (
+        <li key={r}>
+          <RoomMarker
+            filterHandler={(e) => filterHandler(e, r)}
+            key={r}
+            room={r}
+            className='mx-1 h-4 w-4 border'
+          />
+        </li>
+      );
+    }),
+  ];
 
   return (
     <>
@@ -51,10 +59,8 @@ const ListBar = ({ closeHandler, filterHandler }) => {
           <Button onClick={(e) => console.log("not yet")}>nieuw</Button>
           <Button onClick={closeHandler}>sluit</Button>
         </div>
-        <ul className='flex justify-around align-top'>
-          <li>filters</li>
-          {rooms}
-        </ul>
+        <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
+        {curFilter && <h1 className='my-2 text-center text-xl'>{curFilter}</h1>}
       </div>
     </>
   );
