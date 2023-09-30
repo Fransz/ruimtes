@@ -5,15 +5,13 @@ import MonthList from './MonthList'
 
 const Month = ({ displayDate }) => {
   const [showList, setShowList] = useState(false)
-  const [currentDay, setCurrentDay] = useState(null)
-  const [currentRoom, setCurrentRoom] = useState(null)
-
-  const { rresvs } = useRresvContext()
+  const [currentDay, setCurrentDay] = useState(undefined)
+  const [currentRoom, setCurrentRoom] = useState(undefined)
 
   const dayClickHandler = (e, d) => {
     setShowList(true)
     setCurrentDay(d)
-    setCurrentRoom("rode kamer")
+    setCurrentRoom(undefined)
   }
   const roomClickHandler = (e, d, r) => {
     setShowList(true)
@@ -31,9 +29,6 @@ const Month = ({ displayDate }) => {
   // Nr of befores; Days in week before first day.
   const bf = first.getDay() === 0 ? 6 : first.getDay() - 1
   const befores = Array.from(new Array(bf), (_, i) => <NoDay key={i} />)
-
-  // Rresvs this month;
-  const mRresvs = rresvs.filter((r) => r.date >= first && r.date <= last)
 
   // All days.
   let days = Array.from(

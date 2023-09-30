@@ -5,16 +5,13 @@ const dFormat = new Intl.DateTimeFormat('nl-NL', { weekday: 'long' })
 
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }) => {
   const { rresvs } = useRresvContext()
-
-  // reservation on currentday/currentroom
   const dayRresvs = rresvs.filter(r => r.date.getTime() === day.getTime())
 
-  const rooms = ['rode kamer', 'groene kamer', 'rose kamer', 'multiruimte', 'huiskamer', 'keuken']
-  const rRooms = rooms
-    .filter((r) => dayRresvs.some((rresv) => rresv.room === r))
-    .map((r) => {
-      const rr = r.replace(' ', '')
-      return <MonthDayRoom roomClickHandler={e => roomClickHandler(e, day, r)} key={rr} room={rr} />
+  const rooms = [
+    'rode kamer', 'groene kamer', 'rose kamer', 'multiruimte', 'huiskamer', 'keuken'
+  ].filter((r) => dayRresvs.some((rresv) => rresv.room === r))
+   .map((r) => {
+      return <MonthDayRoom roomClickHandler={e => roomClickHandler(e, day, r)} key={r} room={r} />
   })
 
 
@@ -25,7 +22,7 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }) => {
         <div className='mr-3 text-[2rem]'>{day.getDate()}</div>
       </div>
       <div className='flex justify-start min-h-[1rem] mb-4'>
-        {rRooms}
+        {rooms}
       </div>
     </div>
   )
