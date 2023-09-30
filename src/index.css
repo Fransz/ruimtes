@@ -9,7 +9,3 @@ body {
     /* gruvbox white; */
     color:#ebdbb2;
 }
-
-button > svg {
-    margin-right:1rem;
-}

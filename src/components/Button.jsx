@@ -12,7 +12,7 @@ const Button = ({
   ...rest
 }) => {
   const classes = classNames(
-    "flex items-center px-3 py-1.5 border rounded group",
+    "flex items-center px-1.5 py-1.5 border rounded group",
     rest.className,
     {
       "border-blue bg-blue text-white": primary,

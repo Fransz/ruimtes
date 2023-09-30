@@ -1,6 +1,12 @@
 import useRresvContext from "../hooks/use-rresv-context";
 import RoomMarker from "./RoomMarker";
 import Button from "./Button";
+import {
+  RiCheckboxLine,
+  RiCheckLine,
+  RiDeleteBin6Line,
+  RiEditLine,
+} from "react-icons/ri";
 
 const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   const { rresvs } = useRresvContext();
@@ -72,15 +78,29 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
 const MonthListItem = ({ rresv }) => {
   return (
     <li className='mt-4 border-t pt-2'>
-      <div>{rresv.activity}</div>
-      <div className='flex items-center'>
-        <RoomMarker
-          room={rresv.room}
-          filterHandler={(e) => e}
-          className='mx-1 h-4 w-4 rounded-full border'
-        />
-        {rresv.room}
+      <div className='flex justify-between'>
+        <div className='flex items-center'>
+          <RoomMarker
+            room={rresv.room}
+            filterHandler={(e) => e}
+            className='mx-1 h-4 w-4 rounded-full border'
+          />
+          {rresv.room}
+        </div>
+
+        <div className='flex'>
+          <Button className='border-none px-0'>
+            <RiEditLine />
+          </Button>
+          <Button className='border-none px-0'>
+            <RiCheckLine />
+          </Button>
+          <Button className='border-none px-0'>
+            <RiDeleteBin6Line />
+          </Button>
+        </div>
       </div>
+      <div className='mr-auto'>{rresv.activity}</div>
       <div>
         <span className='pr-2'>van:&nbsp;</span>
         <span>{rresv.timestart}</span>
