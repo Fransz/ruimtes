@@ -1,17 +1,53 @@
 import useRresvContext from "../hooks/use-rresv-context";
 import MonthListBar from "./MonthListBar";
 import MonthListItem from "./MonthListItem";
+import { useEffect, useState } from "react";
 
 const MonthList = ({ day, room, closeHandler, filterHandler }) => {
+  const [editIdx, setEditIdx] = useState(undefined);
   const { rresvs } = useRresvContext();
+
+  useEffect(() => {
+    setEditIdx(undefined);
+  });
+
+  const handleEdit = (i) => {
+    setEditIdx(i);
+  };
+
+  const handleSave = (i) => {
+    if (i === editIdx) {
+      setEditIdx(undefined);
+    }
+  };
+
+  const handleReset = (i) => {
+    if (i === editIdx) {
+      setEditIdx(undefined);
+    }
+  };
+
+  const handleDelete = (i) => {
+    console.log(`Delete; ${i}`);
+  };
 
   const renderedItems = rresvs
     .filter(
-      (r) =>
-        r.date.getTime() === day.getTime() &&
-        (room === undefined || r.room === room)
+      (rresv) =>
+        rresv.date.getTime() === day.getTime() &&
+        (room === undefined || rresv.room === room)
     )
-    .map((r) => <MonthListItem key={r.id} rresv={r} />);
+    .map((rresv, i) => (
+      <MonthListItem
+        rresv={rresv}
+        key={rresv.id}
+        handleEdit={(e) => handleEdit(i)}
+        handleSave={(e) => handleSave(rresv.id)}
+        handleReset={(e) => handleReset(i)}
+        handleDelete={(e) => handleDelete(rresv.id)}
+        isEdit={editIdx === i}
+      />
+    ));
 
   return (
     <>
