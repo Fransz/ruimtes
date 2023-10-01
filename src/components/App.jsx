@@ -6,7 +6,7 @@ import useRresvContext from "../hooks/use-rresv-context";
 function App() {
   const { rresvs, fetchRresvs, createRresv } = useRresvContext();
 
-  const displayDate = new Date();
+  const displayDate = new Date("2023-09-30");
 
   useEffect(() => {
     fetchRresvs();

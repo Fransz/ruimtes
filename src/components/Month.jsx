@@ -71,14 +71,13 @@ const Month = ({ displayDate }) => {
           {days}
         </div>
         {showList && (
-          <div className=''>
-            <MonthList
-              room={currentRoom}
-              day={currentDay}
-              closeHandler={closeHandler}
-              filterHandler={filterHandler}
-            />
-          </div>
+          <MonthList
+            room={currentRoom}
+            day={currentDay}
+            key={currentDay.getTime()}
+            closeHandler={closeHandler}
+            filterHandler={filterHandler}
+          />
         )}
       </div>
     </>

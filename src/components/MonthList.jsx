@@ -7,10 +7,6 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   const [editIdx, setEditIdx] = useState(undefined);
   const { rresvs } = useRresvContext();
 
-  useEffect(() => {
-    setEditIdx(undefined);
-  });
-
   const handleEdit = (i) => {
     setEditIdx(i);
   };
@@ -50,7 +46,7 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
     ));
 
   return (
-    <>
+    <div>
       <h1 className='text-center text-xl'>{`Bezetting op ${day.toLocaleDateString()}`}</h1>
       <MonthListBar
         closeHandler={closeHandler}
@@ -58,7 +54,7 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
         curFilter={room}
       />
       <ul>{renderedItems}</ul>
-    </>
+    </div>
   );
 };
 
