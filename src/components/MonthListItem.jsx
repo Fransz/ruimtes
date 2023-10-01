@@ -7,6 +7,36 @@ import {
 } from "react-icons/ri";
 import RoomMarker from "./RoomMarker";
 import { useState } from "react";
+import Dropdown from "./Dropdown";
+
+const roomItems = [
+  {
+    value: "rode kamer",
+    content: (
+      <div className='flex'>
+        <RoomMarker
+          room='groene kamer'
+          filterHandler={(e) => e}
+          className='mx-1 h-4 w-4 rounded-full border'
+        />
+        <span>rode kamer</span>
+      </div>
+    ),
+  },
+  {
+    value: "groene kamer",
+    content: (
+      <>
+        <RoomMarker
+          room='groene kamer'
+          filterHandler={(e) => e}
+          className='mx-1 h-4 w-4 rounded-full border'
+        />
+        <span>groene kamer</span>
+      </>
+    ),
+  },
+];
 
 const MonthListItem = ({
   rresv,
@@ -16,6 +46,9 @@ const MonthListItem = ({
   handleReset,
   handleDelete,
 }) => {
+  const [room, setRoom] = useState(
+    roomItems.find((r) => r.value === rresv.room)
+  );
   const [activity, setActivity] = useState(rresv.activity);
   const [timestart, setTimestart] = useState(rresv.timestart);
   const [timeend, setTimeend] = useState(rresv.timeend);
@@ -33,12 +66,18 @@ const MonthListItem = ({
     <li className='mt-4 border-t pt-2'>
       <div className='flex justify-between'>
         <div className='flex items-center'>
-          <RoomMarker
-            room={rresv.room}
-            filterHandler={(e) => e}
-            className='mx-1 h-4 w-4 rounded-full border'
-          />
-          {rresv.room}
+          {isEdit ? (
+            <Dropdown items={roomItems} selected={room} />
+          ) : (
+            <>
+              <RoomMarker
+                room={rresv.room}
+                filterHandler={(e) => e}
+                className='mx-1 h-4 w-4 rounded-full border'
+              />
+              <span>{rresv.room}</span>
+            </>
+          )}
         </div>
 
         <div className='flex'>
