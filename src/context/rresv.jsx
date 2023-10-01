@@ -28,22 +28,32 @@ const Provider = ({ children }) => {
   const updateRresv = async (activity) => {
     const date = activity.date.toISOString().slice(0, 10);
     const updated = { ...activity, date };
-    await axios.put(`http://localhost:3001/rresv/${activity.id}`, updated);
+    await axios
+      .put(`http://localhost:3001/rresv/${activity.id}`, updated)
+      .then((r) => {
+        setRresvs([...rresvs.filter((r) => r.id !== activity.id), activity]);
+      });
+  };
 
-    setRresvs([...rresvs.filter((r) => r.id !== activity.id), activity]);
-    console.log(rresvs);
+  const deleteRresv = async (activity) => {
+    await axios
+      .delete(`http://localhost:3001/rresv/${activity.id}`)
+      .then((r) => {
+        setRresvs(rresvs.filter((r) => r.id !== activity.id));
+      });
   };
 
   const deleteRresvById = async (id) => {
-    await axios.delete(`http://localhost:3001/rresv/${id}`);
-    setRresvs(rresvs.filter((r) => r.id !== id));
+    await axios.delete(`http://localhost:3001/rresv/${id}`).then((r) => {
+      setRresvs(rresvs.filter((r) => r.id !== id));
+    });
   };
 
   const ctx = {
     rresvs,
     createRresv,
     updateRresv,
-    deleteRresvById,
+    deleteRresv,
     fetchRresvs,
   };
 

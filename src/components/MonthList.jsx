@@ -6,7 +6,7 @@ import { act } from "react-dom/test-utils";
 
 const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   const [editIdx, setEditIdx] = useState(undefined);
-  const { rresvs, updateRresv } = useRresvContext();
+  const { rresvs, deleteRresv, updateRresv } = useRresvContext();
 
   const handleEdit = (i) => {
     setEditIdx(i);
@@ -25,8 +25,8 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
     }
   };
 
-  const handleDelete = (i) => {
-    console.log(`Delete; ${i}`);
+  const handleDelete = (activity) => {
+    deleteRresv(activity);
   };
 
   const renderedItems = rresvs
@@ -42,7 +42,7 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
         handleEdit={(e) => handleEdit(rresv.id)}
         handleSave={(e, a) => handleSave(rresv.id, a)}
         handleReset={(e) => handleReset(rresv.id)}
-        handleDelete={(e) => handleDelete(rresv.id)}
+        handleDelete={(e) => handleDelete(rresv)}
         isEdit={editIdx === rresv.id}
       />
     ));

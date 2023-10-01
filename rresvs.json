@@ -9,14 +9,6 @@
       "id": 1
     },
     {
-      "activity": "activity nummer 10",
-      "date": "2023-09-10",
-      "timestart": "13:00",
-      "timeend": "14:00",
-      "room": "rode kamer",
-      "id": 2
-    },
-    {
       "activity": "activity 2",
       "date": "2023-09-11",
       "timestart": "13:00",
@@ -33,7 +25,7 @@
       "id": 4
     },
     {
-      "activity": "activity 5",
+      "activity": "activity",
       "date": "2023-09-12",
       "timestart": "13:00",
       "timeend": "14:00",
@@ -91,8 +83,8 @@
     {
       "activity": "activity 16",
       "date": "2023-09-30",
-      "timestart": "23:00",
-      "timeend": "00:00",
+      "timestart": "19:30",
+      "timeend": "21:00",
       "room": "rode kamer",
       "id": 12
     },
@@ -131,7 +123,7 @@
     {
       "activity": "activity 21",
       "date": "2023-09-30",
-      "timestart": "18:00",
+      "timestart": "20:00",
       "timeend": "19:00",
       "room": "rode kamer",
       "id": 17
