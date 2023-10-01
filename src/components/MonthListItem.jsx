@@ -59,36 +59,44 @@ const MonthListItem = ({
           )}
         </div>
       </div>
+
       {isEdit ? (
         <input
-          className='mr-auto text-black'
+          className='my-1 mr-auto text-black'
           onChange={handleActivity}
           value={activity}
         />
       ) : (
-        <div className='mr-auto'>{rresv.activity}</div>
+        <div className='my-1 mr-auto'>{rresv.activity}</div>
       )}
-      <div>
-        <span className='pr-2'>van:&nbsp;</span>
-        {isEdit ? (
-          <input
-            className='w-[3em] text-black'
-            onChange={handleTimestart}
-            value={timestart}
-          />
-        ) : (
-          <span className='w-[3em]'>{rresv.timestart}</span>
-        )}
-        <span className='px-2'>tot:&nbsp;</span>
-        {isEdit ? (
-          <input
-            className='w-[3em] text-black'
-            onChange={handleTimeend}
-            value={timeend}
-          />
-        ) : (
-          <span className='w-[3em]'>{rresv.timeend}</span>
-        )}
+
+      <div className='flex justify-between'>
+        <div>
+          <span className='pr-2'>van:&nbsp;</span>
+          {isEdit ? (
+            <input
+              className='my-1 text-black'
+              onChange={handleTimestart}
+              value={timestart}
+              type='time'
+            />
+          ) : (
+            <span className='my-1 w-[3em]'>{rresv.timestart}</span>
+          )}
+        </div>
+        <div>
+          <span className='pr-2'>tot:&nbsp;</span>
+          {isEdit ? (
+            <input
+              className='my-1 text-black'
+              onChange={handleTimeend}
+              value={timeend}
+              type='time'
+            />
+          ) : (
+            <span className='my-1 w-[3em]'>{rresv.timeend}</span>
+          )}
+        </div>
       </div>
     </li>
   );
