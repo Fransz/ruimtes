@@ -1,15 +1,15 @@
 {
   "rresv": [
     {
-      "activity": "activity 10",
+      "activity": "activity 101",
       "date": "2023-09-01",
-      "timestart": "13:00",
-      "timeend": "14:00",
+      "timestart": "15:00",
+      "timeend": "16:00",
       "room": "groene kamer",
       "id": 1
     },
     {
-      "activity": "activity 1",
+      "activity": "activity nummer 10",
       "date": "2023-09-10",
       "timestart": "13:00",
       "timeend": "14:00",

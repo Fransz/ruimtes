@@ -24,6 +24,11 @@ const MonthListItem = ({
   const handleTimestart = (e) => setTimestart(e.target.value);
   const handleTimeend = (e) => setTimeend(e.target.value);
 
+  const handleItemSave = (e) => {
+    const a = { ...rresv, activity, timestart, timeend };
+    handleSave(e, a);
+  };
+
   return (
     <li className='mt-4 border-t pt-2'>
       <div className='flex justify-between'>
@@ -48,7 +53,7 @@ const MonthListItem = ({
             </Button>
           )}
           {isEdit && (
-            <Button onClick={handleSave} className='border-none text-green'>
+            <Button onClick={handleItemSave} className='border-none text-green'>
               <RiCheckLine />
             </Button>
           )}

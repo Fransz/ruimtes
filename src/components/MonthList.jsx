@@ -2,18 +2,20 @@ import useRresvContext from "../hooks/use-rresv-context";
 import MonthListBar from "./MonthListBar";
 import MonthListItem from "./MonthListItem";
 import { useEffect, useState } from "react";
+import { act } from "react-dom/test-utils";
 
 const MonthList = ({ day, room, closeHandler, filterHandler }) => {
   const [editIdx, setEditIdx] = useState(undefined);
-  const { rresvs } = useRresvContext();
+  const { rresvs, updateRresv } = useRresvContext();
 
   const handleEdit = (i) => {
     setEditIdx(i);
   };
 
-  const handleSave = (i) => {
+  const handleSave = (i, activity) => {
     if (i === editIdx) {
       setEditIdx(undefined);
+      updateRresv(activity);
     }
   };
 
@@ -37,11 +39,11 @@ const MonthList = ({ day, room, closeHandler, filterHandler }) => {
       <MonthListItem
         rresv={rresv}
         key={rresv.id}
-        handleEdit={(e) => handleEdit(i)}
-        handleSave={(e) => handleSave(rresv.id)}
-        handleReset={(e) => handleReset(i)}
+        handleEdit={(e) => handleEdit(rresv.id)}
+        handleSave={(e, a) => handleSave(rresv.id, a)}
+        handleReset={(e) => handleReset(rresv.id)}
         handleDelete={(e) => handleDelete(rresv.id)}
-        isEdit={editIdx === i}
+        isEdit={editIdx === rresv.id}
       />
     ));
 
