@@ -1,37 +1,39 @@
-import useRresvContext from "../hooks/use-rresv-context";
 import MonthDay, { NoDay } from "./MonthDay";
-import { useState } from "react";
+import React, { useState } from "react";
 import MonthList from "./MonthList";
 
-const Month = ({ displayDate }) => {
-  const [showList, setShowList] = useState(false);
-  const [currentDay, setCurrentDay] = useState(undefined);
-  const [currentRoom, setCurrentRoom] = useState(undefined);
+interface IMonth {
+  displayDate: Date;
+}
+const Month = ({ displayDate }: IMonth) => {
+  const [showList, setShowList] = useState<boolean>(false);
+  const [currentDay, setCurrentDay] = useState<Date | undefined>(undefined);
+  const [currentRoom, setCurrentRoom] = useState<string | undefined>(undefined);
 
-  const dayClickHandler = (e, d) => {
+  const dayClickHandler = (d: Date): void => {
     setShowList(true);
     setCurrentDay(d);
     setCurrentRoom(undefined);
   };
 
-  const roomClickHandler = (e, d, r) => {
+  const roomClickHandler = (e: React.MouseEvent, d: Date, r: string): void => {
+    e.stopPropagation();
     setShowList(true);
     setCurrentDay(d);
     setCurrentRoom(r);
-    e.stopPropagation();
   };
 
   /**
    * Handler for closing the list.
    */
-  const closeHandler = (e) => {
+  const closeHandler = () => {
     setShowList(!showList);
   };
 
   /**
    * Handler for filtering the list.
    */
-  const filterHandler = (e, r) => {
+  const filterHandler = (r: string | undefined) => {
     setCurrentRoom(r);
   };
 
@@ -73,8 +75,8 @@ const Month = ({ displayDate }) => {
         {showList && (
           <MonthList
             room={currentRoom}
-            day={currentDay}
-            key={currentDay.getTime()}
+            day={currentDay ?? first}
+            key={currentDay?.getTime()}
             closeHandler={closeHandler}
             filterHandler={filterHandler}
           />

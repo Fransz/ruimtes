@@ -1,42 +1,48 @@
-import Button from "./Button";
+import React, { useState } from "react";
 import {
   RiCheckLine,
   RiCloseLine,
   RiDeleteBin6Line,
   RiEditLine,
 } from "react-icons/ri";
-import RoomMarker from "./RoomMarker";
-import { useState } from "react";
-import Dropdown from "./Dropdown";
 
-const roomItems = [
-  {
-    value: "rode kamer",
-    content: (
-      <div className='flex'>
+import Button from "./Button";
+import RoomMarker from "./RoomMarker";
+import { type IRresv } from "../context/rresv";
+import DropDown, { IDropDownItem } from "./DropDown";
+
+interface IRoomItem extends IDropDownItem {}
+const roomItems: IRoomItem[] = [
+  "rode kamer",
+  "groene kamer",
+  "rose kamer",
+  "multiruimte",
+  "huiskamer",
+  "keuken",
+].map((r) => {
+  return {
+    value: r,
+    label: (
+      <div className='mx-auto flex items-center px-2'>
         <RoomMarker
-          room='groene kamer'
+          room={r}
           filterHandler={(e) => e}
           className='mx-1 h-4 w-4 rounded-full border'
         />
-        <span>rode kamer</span>
+        <div>{r}</div>
       </div>
     ),
-  },
-  {
-    value: "groene kamer",
-    content: (
-      <>
-        <RoomMarker
-          room='groene kamer'
-          filterHandler={(e) => e}
-          className='mx-1 h-4 w-4 rounded-full border'
-        />
-        <span>groene kamer</span>
-      </>
-    ),
-  },
-];
+  };
+});
+
+interface IMonthListItem {
+  rresv: IRresv;
+  handleEdit: (i: number) => void;
+  isEdit: boolean;
+  handleSave: (i: number, r: IRresv) => void;
+  handleReset: (i: number) => void;
+  handleDelete: (r: IRresv) => void;
+}
 
 const MonthListItem = ({
   rresv,
@@ -45,21 +51,25 @@ const MonthListItem = ({
   handleSave,
   handleReset,
   handleDelete,
-}) => {
+}: IMonthListItem) => {
   const [room, setRoom] = useState(
-    roomItems.find((r) => r.value === rresv.room)
+    roomItems.find((room) => room.value === rresv.room) ?? roomItems[0]
   );
   const [activity, setActivity] = useState(rresv.activity);
   const [timestart, setTimestart] = useState(rresv.timestart);
   const [timeend, setTimeend] = useState(rresv.timeend);
 
-  const handleActivity = (e) => setActivity(e.target.value);
-  const handleTimestart = (e) => setTimestart(e.target.value);
-  const handleTimeend = (e) => setTimeend(e.target.value);
+  const handleActivity = (e: React.ChangeEvent) =>
+    setActivity((e.target as HTMLInputElement).value);
+  const handleTimestart = (e: React.ChangeEvent) =>
+    setTimestart((e.target as HTMLInputElement).value);
+  const handleTimeend = (e: React.ChangeEvent) =>
+    setTimeend((e.target as HTMLInputElement).value);
+  const handleRoom = (r: IRoomItem) => setRoom(r);
 
-  const handleItemSave = (e) => {
-    const a = { ...rresv, activity, timestart, timeend };
-    handleSave(e, a);
+  const handleItemSave = () => {
+    const resv = { ...rresv, room: room.value, activity, timestart, timeend };
+    handleSave(rresv.id, resv);
   };
 
   return (
@@ -67,7 +77,11 @@ const MonthListItem = ({
       <div className='flex justify-between'>
         <div className='flex items-center'>
           {isEdit ? (
-            <Dropdown items={roomItems} selected={room} />
+            <DropDown
+              items={roomItems}
+              selected={room}
+              setSelected={handleRoom}
+            />
           ) : (
             <>
               <RoomMarker
@@ -82,12 +96,18 @@ const MonthListItem = ({
 
         <div className='flex'>
           {!isEdit && (
-            <Button onClick={handleEdit} className='border-none text-yellow'>
+            <Button
+              onClick={() => handleEdit(rresv.id)}
+              className='border-none text-yellow'
+            >
               <RiEditLine />
             </Button>
           )}
           {!isEdit && (
-            <Button onClick={handleDelete} className='border-none text-red'>
+            <Button
+              onClick={() => handleDelete(rresv)}
+              className='border-none text-red'
+            >
               <RiDeleteBin6Line />
             </Button>
           )}
@@ -97,7 +117,10 @@ const MonthListItem = ({
             </Button>
           )}
           {isEdit && (
-            <Button onClick={handleReset} className='border-none text-red'>
+            <Button
+              onClick={() => handleReset(rresv.id)}
+              className='border-none text-red'
+            >
               <RiCloseLine />
             </Button>
           )}
@@ -106,7 +129,7 @@ const MonthListItem = ({
 
       {isEdit ? (
         <input
-          className='my-1 mr-auto text-black'
+          className='my-1 mr-auto bg-white text-black'
           onChange={handleActivity}
           value={activity}
         />
@@ -119,7 +142,7 @@ const MonthListItem = ({
           <span className='pr-2'>van:&nbsp;</span>
           {isEdit ? (
             <input
-              className='my-1 text-black'
+              className='my-1 bg-white text-black'
               onChange={handleTimestart}
               value={timestart}
               type='time'
@@ -132,7 +155,7 @@ const MonthListItem = ({
           <span className='pr-2'>tot:&nbsp;</span>
           {isEdit ? (
             <input
-              className='my-1 text-black'
+              className='my-1 bg-white text-black'
               onChange={handleTimeend}
               value={timeend}
               type='time'

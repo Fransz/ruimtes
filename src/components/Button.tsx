@@ -1,4 +1,32 @@
+import React from "react";
 import classNames from "classnames";
+
+// @see https://stackoverflow.com/questions/40510611
+type AtMostOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
+  {
+    [K in Keys]-?: Partial<Pick<T, K>> &
+      Partial<Record<Exclude<Keys, K>, undefined>>;
+  }[Keys];
+
+type IButton = {
+  children?: React.ReactNode;
+  outline?: boolean;
+  rounded?: boolean;
+  onClick: (e: React.MouseEvent) => void;
+  [propName: string]: unknown;
+} & AtMostOne<
+  {
+    primary?: boolean;
+    secondary?: boolean;
+    succes?: boolean;
+    warning?: boolean;
+    danger?: boolean;
+  },
+  "primary" | "secondary" | "succes" | "warning" | "danger"
+>;
 
 const Button = ({
   children,
@@ -9,11 +37,12 @@ const Button = ({
   danger,
   outline,
   rounded,
+  onClick,
   ...rest
-}) => {
+}: IButton) => {
   const classes = classNames(
     "flex items-center px-1.5 py-1.5 border rounded group",
-    rest.className,
+    (rest as { className: string }).className,
     {
       "border-blue bg-blue text-white": primary,
       "border-gray bg-gray text-white": secondary,
@@ -29,25 +58,10 @@ const Button = ({
     }
   );
   return (
-    <button {...rest} className={classes}>
+    <button onClick={onClick} className={classes}>
       {children}
     </button>
   );
 };
 
-Button.propTypes = {
-  checkVariationValue: ({ primary, secondary, success, warning, danger }) => {
-    const cnt =
-      Number(!!primary) +
-      Number(!!secondary) +
-      Number(!!success) +
-      Number(!!warning) +
-      Number(!!danger);
-
-    if (cnt > 1)
-      return new Error(
-        "Only one of primary, secondary, success, warning, danger can be true"
-      );
-  },
-};
 export default Button;

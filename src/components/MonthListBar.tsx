@@ -1,9 +1,16 @@
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
+import React from "react";
 
-const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
+interface IListBar {
+  closeHandler: () => void;
+  filterHandler: (r: string | undefined) => void;
+  curFilter: string | undefined;
+}
+
+const ListBar = ({ closeHandler, filterHandler, curFilter }: IListBar) => {
   const filters = [
-    <li key='all' onClick={(e) => filterHandler(e, undefined)}>
+    <li key='all' onClick={(_) => filterHandler(undefined)}>
       alle
     </li>,
     ...[
@@ -17,10 +24,10 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
       return (
         <li key={r}>
           <RoomMarker
-            filterHandler={(e) => filterHandler(e, r)}
+            filterHandler={(_) => filterHandler(r)}
             key={r}
             room={r === curFilter ? r : `dimmed ${r}`}
-            className='mx-1 h-4 w-4 border'
+            className='mx-1 h-4 w-4 border-2'
           />
         </li>
       );
@@ -34,7 +41,7 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }) => {
     <>
       <div className='my-2'>
         <div className='my-3 flex justify-around'>
-          <Button onClick={(e) => console.log("not yet")}>nieuw</Button>
+          <Button onClick={(_) => console.log("not yet")}>nieuw</Button>
           <Button onClick={closeHandler}>sluit</Button>
         </div>
         <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
