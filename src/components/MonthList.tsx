@@ -2,9 +2,10 @@ import useRresvContext, { type IRresv } from "../hooks/use-rresv-context";
 import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
 import MonthListItem from "./MonthListItem";
+import { Dayjs } from "dayjs";
 
 interface IMonthList {
-  day: Date;
+  day: Dayjs;
   room: string | undefined;
   closeHandler: () => void;
   filterHandler: (r: string | undefined) => void;
@@ -38,8 +39,7 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   const renderedItems: React.ReactNode = rresvs
     .filter(
       (rresv: IRresv) =>
-        rresv.date.getTime() === day.getTime() &&
-        (room === undefined || rresv.room === room)
+        rresv.date.isSame(day) && (room === undefined || rresv.room === room)
     )
     .map((rresv: IRresv) => (
       <MonthListItem
@@ -55,7 +55,9 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
 
   return (
     <div>
-      <h1 className='text-center text-xl'>{`Bezetting op ${day.toLocaleDateString()}`}</h1>
+      <h1 className='text-center text-xl'>{`Bezetting op ${day.format(
+        "MMMM YYYY"
+      )}`}</h1>
       <MonthListBar
         closeHandler={closeHandler}
         filterHandler={filterHandler}

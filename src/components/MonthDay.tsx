@@ -1,18 +1,17 @@
 import RoomMarker from "./RoomMarker";
 import useRresvContext from "../hooks/use-rresv-context";
 import React from "react";
-
-const dFormat = new Intl.DateTimeFormat("nl-NL", { weekday: "long" });
+import { Dayjs } from "dayjs";
 
 interface IMonthDay {
-  day: Date;
-  dayClickHandler: (d: Date) => void;
-  roomClickHandler: (e: React.MouseEvent, d: Date, r: string) => void;
+  day: Dayjs;
+  dayClickHandler: (d: Dayjs) => void;
+  roomClickHandler: (e: React.MouseEvent, d: Dayjs, r: string) => void;
 }
 
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
   const { rresvs } = useRresvContext();
-  const dayRresvs = rresvs.filter((r) => r.date.getTime() === day.getTime());
+  const dayRresvs = rresvs.filter((r) => r.date.isSame(day));
 
   const rooms = [
     "rode kamer",
@@ -40,8 +39,8 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
       className='flex h-[15vh] w-[14%] flex-col justify-between border border-blue'
     >
       <div className='flex items-baseline justify-between'>
-        <div className='ml-3'>{dFormat.format(day)}</div>
-        <div className='mr-3 text-[2rem]'>{day.getDate()}</div>
+        <div className='ml-3'>{day.utc().format("dddd")}</div>
+        <div className='mr-3 text-[2rem]'>{day.date()}</div>
       </div>
       <div className='mb-4 flex min-h-[1rem] justify-start'>{rooms}</div>
     </div>

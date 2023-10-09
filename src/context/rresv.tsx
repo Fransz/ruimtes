@@ -1,8 +1,12 @@
 import axios from "axios";
+import dayjs, { Dayjs } from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import utc from "dayjs/plugin/utc";
+
 import React, { createContext, useState } from "react";
 
 interface IRresv {
-  date: Date;
+  date: Dayjs;
   timestart: string;
   timeend: string;
   activity: string;
@@ -17,6 +21,10 @@ interface IRresvCtx {
   updateRresv: (r: IRresv) => Promise<void>;
   deleteRresv: (r: IRresv) => Promise<void>;
 }
+
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
+
 const RresvContext = createContext({} as IRresvCtx);
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
@@ -32,7 +40,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 
     rs.map((r: IRresv) => {
       const d = r.date;
-      r.date = new Date(d);
+      r.date = dayjs.utc(d, "YYYY-MM-DD");
       return r;
     });
     setRresvs(rs);
