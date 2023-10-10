@@ -15,28 +15,28 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
   const { rresvs, deleteRresv, updateRresv } = useRresvContext();
 
-  const handleEdit = (i: number) => {
+  const handleEdit = (i: number): void => {
     setEditIdx(i);
   };
 
-  const handleSave = (i: number, resv: IRresv) => {
+  const handleSave = (i: number, resv: IRresv): void => {
     if (i === editIdx) {
       setEditIdx(undefined);
       void updateRresv(resv);
     }
   };
 
-  const handleReset = (i: number) => {
+  const handleReset = (i: number): void => {
     if (i === editIdx) {
       setEditIdx(undefined);
     }
   };
 
-  const handleDelete = (resv: IRresv) => {
+  const handleDelete = (resv: IRresv): void => {
     void deleteRresv(resv);
   };
 
-  const renderedItems: React.ReactNode = rresvs
+  const renderedItems: React.ReactElement[] = rresvs
     .filter(
       (rresv: IRresv) =>
         rresv.date.isSame(day) && (room === undefined || rresv.room === room)
@@ -55,9 +55,9 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
 
   return (
     <div>
-      <h1 className='text-center text-xl'>{`Bezetting op ${day.format(
-        "MMMM YYYY"
-      )}`}</h1>
+      <h1 className='text-center text-xl'>
+        {`Bezetting op ${day.format("DD MMMM YYYY")}`}
+      </h1>
       <MonthListBar
         closeHandler={closeHandler}
         filterHandler={filterHandler}

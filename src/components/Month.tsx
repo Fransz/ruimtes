@@ -1,5 +1,5 @@
 import MonthDay, { NoDay } from "./MonthDay";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import MonthList from "./MonthList";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/nl";
@@ -28,26 +28,28 @@ const Month = ({ displayDate }: IMonth) => {
   /**
    * Handler for closing the list.
    */
-  const closeHandler = () => {
+  const closeHandler = (): void => {
     setShowList(!showList);
   };
 
   /**
    * Handler for filtering the list.
    */
-  const filterHandler = (r: string | undefined) => {
+  const filterHandler = (r: string | undefined): void => {
     setCurrentRoom(r);
   };
 
-  const first = dayjs.utc(displayDate).date(1);
-  const last = dayjs.utc(first).endOf("month");
+  const first: Dayjs = dayjs.utc(displayDate).date(1);
+  const last: Dayjs = dayjs.utc(first).endOf("month");
 
   // Nr of befores; Days in week before first day.
-  const bf = first.day() === 0 ? 6 : first.day() - 1;
-  const befores = Array.from(new Array(bf), (_, i) => <NoDay key={i} />);
+  const bf: number = first.day() === 0 ? 6 : first.day() - 1;
+  const befores: React.ReactElement[] = Array.from(new Array(bf), (_, i) => (
+    <NoDay key={i} />
+  ));
 
   // All days.
-  let days = Array.from(new Array(last.date()), (_, i) =>
+  let days: React.ReactElement[] = Array.from(new Array(last.date()), (_, i) =>
     dayjs
       .utc(first)
       .locale("nl")
@@ -61,11 +63,11 @@ const Month = ({ displayDate }: IMonth) => {
     />
   ));
 
-  const header = displayDate.format("MMMM YYYY");
-
   return (
     <>
-      <div className='py-6 text-center text-6xl'>{header}</div>
+      <div className='py-6 text-center text-6xl'>
+        {displayDate.format("MMMM YYYY")}
+      </div>
       <div className='flex'>
         <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
           {befores}

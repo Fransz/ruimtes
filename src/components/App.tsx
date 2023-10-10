@@ -1,10 +1,11 @@
-import Month from "./Month";
-
 import { useEffect } from "react";
-import useRresvContext from "../hooks/use-rresv-context";
+
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import "dayjs/locale/nl";
+
+import Month from "./Month";
+import useRresvContext from "../hooks/use-rresv-context";
 
 dayjs.extend(utc);
 
