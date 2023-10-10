@@ -1,4 +1,4 @@
-import useRresvContext, { type IRresv } from "../hooks/use-rresv-context";
+import useResvContext, { type IResv } from "../hooks/use-resv-context";
 import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
 import MonthListItem from "./MonthListItem";
@@ -13,16 +13,16 @@ interface IMonthList {
 
 const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
-  const { rresvs, deleteRresv, updateRresv } = useRresvContext();
+  const { resvs, deleteResv, updateResv } = useResvContext();
 
   const handleEdit = (i: number): void => {
     setEditIdx(i);
   };
 
-  const handleSave = (i: number, resv: IRresv): void => {
+  const handleSave = (i: number, resv: IResv): void => {
     if (i === editIdx) {
       setEditIdx(undefined);
-      void updateRresv(resv);
+      void updateResv(resv);
     }
   };
 
@@ -32,16 +32,16 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
     }
   };
 
-  const handleDelete = (resv: IRresv): void => {
-    void deleteRresv(resv);
+  const handleDelete = (resv: IResv): void => {
+    void deleteResv(resv);
   };
 
-  const renderedItems: React.ReactElement[] = rresvs
+  const renderedItems: React.ReactElement[] = resvs
     .filter(
-      (rresv: IRresv) =>
+      (rresv: IResv) =>
         rresv.date.isSame(day) && (room === undefined || rresv.room === room)
     )
-    .map((rresv: IRresv) => (
+    .map((rresv: IResv) => (
       <MonthListItem
         rresv={rresv}
         key={rresv.id}

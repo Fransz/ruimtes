@@ -5,17 +5,17 @@ import utc from "dayjs/plugin/utc";
 import "dayjs/locale/nl";
 
 import Month from "./Month";
-import useRresvContext from "../hooks/use-rresv-context";
+import useResvContext from "../hooks/use-resv-context";
 
 dayjs.extend(utc);
 
 function App() {
-  const { fetchRresvs } = useRresvContext();
+  const { fetchResvs } = useResvContext();
 
   const displayDate = dayjs.utc("2023-09-30").locale("nl");
 
   useEffect(() => {
-    void fetchRresvs();
+    void fetchResvs();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <Month displayDate={displayDate}></Month>;

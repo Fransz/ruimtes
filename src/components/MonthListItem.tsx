@@ -8,7 +8,7 @@ import {
 
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
-import { type IRresv } from "../context/rresv";
+import { type IResv } from "../context/resv";
 import DropDown, { IDropDownItem } from "./DropDown";
 
 interface IRoomItem extends IDropDownItem {}
@@ -36,12 +36,12 @@ const roomItems: IRoomItem[] = [
 });
 
 interface IMonthListItem {
-  rresv: IRresv;
+  rresv: IResv;
   handleEdit: (i: number) => void;
   isEdit: boolean;
-  handleSave: (i: number, r: IRresv) => void;
+  handleSave: (i: number, r: IResv) => void;
   handleReset: (i: number) => void;
-  handleDelete: (r: IRresv) => void;
+  handleDelete: (r: IResv) => void;
 }
 
 const MonthListItem = ({
