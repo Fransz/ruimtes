@@ -2,31 +2,27 @@ import RoomMarker from "./RoomMarker";
 import useResvContext from "../hooks/use-resv-context";
 import React from "react";
 import { Dayjs } from "dayjs";
+import useRoomContext from "../hooks/use-room-context";
+import { IRoom } from "../context/Room";
 
 interface IMonthDay {
   day: Dayjs;
   dayClickHandler: (d: Dayjs) => void;
-  roomClickHandler: (e: React.MouseEvent, d: Dayjs, r: string) => void;
+  roomClickHandler: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void;
 }
 
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
   const { resvs } = useResvContext();
+  const { rooms } = useRoomContext();
   const dayResvs = resvs.filter((r) => r.date.isSame(day));
 
-  const rooms = [
-    "rode kamer",
-    "groene kamer",
-    "rose kamer",
-    "multiruimte",
-    "huiskamer",
-    "keuken",
-  ]
-    .filter((r) => dayResvs.some((rresv) => rresv.room === r))
+  const renderedRooms = rooms
+    .filter((r) => dayResvs.some((rresv) => rresv.room.id === r.id))
     .map((r) => {
       return (
         <RoomMarker
           filterHandler={(e) => roomClickHandler(e, day, r)}
-          key={r}
+          key={r.id}
           room={r}
           className='mx-1 h-4 w-4 rounded-full border'
         />
@@ -42,7 +38,9 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
         <div className='ml-3'>{day.utc().format("dddd")}</div>
         <div className='mr-3 text-[2rem]'>{day.date()}</div>
       </div>
-      <div className='mb-4 flex min-h-[1rem] justify-start'>{rooms}</div>
+      <div className='mb-4 flex min-h-[1rem] justify-start'>
+        {renderedRooms}
+      </div>
     </div>
   );
 };

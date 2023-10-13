@@ -1,8 +1,9 @@
 import MonthDay, { NoDay } from "./MonthDay";
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
 import MonthList from "./MonthList";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/nl";
+import { IRoom } from "../context/Room";
 
 interface IMonth {
   displayDate: Dayjs;
@@ -10,7 +11,7 @@ interface IMonth {
 const Month = ({ displayDate }: IMonth) => {
   const [showList, setShowList] = useState<boolean>(false);
   const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(undefined);
-  const [currentRoom, setCurrentRoom] = useState<string | undefined>(undefined);
+  const [currentRoom, setCurrentRoom] = useState<IRoom | undefined>(undefined);
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
@@ -18,7 +19,7 @@ const Month = ({ displayDate }: IMonth) => {
     setCurrentRoom(undefined);
   };
 
-  const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: string): void => {
+  const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
     e.stopPropagation();
     setShowList(true);
     setCurrentDay(d);
@@ -35,7 +36,7 @@ const Month = ({ displayDate }: IMonth) => {
   /**
    * Handler for filtering the list.
    */
-  const filterHandler = (r: string | undefined): void => {
+  const filterHandler = (r: IRoom | undefined): void => {
     setCurrentRoom(r);
   };
 

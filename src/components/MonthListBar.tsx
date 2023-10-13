@@ -1,41 +1,41 @@
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
 import React from "react";
+import { IRoom } from "../context/Room";
+import useRoomContext from "../hooks/use-room-context";
 
 interface IListBar {
   closeHandler: () => void;
-  filterHandler: (r: string | undefined) => void;
-  curFilter: string | undefined;
+  filterHandler: (r: IRoom | undefined) => void;
+  curFilter: IRoom | undefined;
 }
 
 const ListBar = ({ closeHandler, filterHandler, curFilter }: IListBar) => {
+  const { rooms } = useRoomContext();
+  const renderedRooms = rooms.map((r) => {
+    return (
+      <li key={r.id}>
+        <RoomMarker
+          filterHandler={(_) => filterHandler(r)}
+          room={r}
+          dimmed={r.id !== curFilter?.id}
+          className='mx-1 h-4 w-4 border-2'
+        />
+      </li>
+    );
+  });
+
   const filters = [
     <li key='all' onClick={(_) => filterHandler(undefined)}>
       alle
     </li>,
-    ...[
-      "rode kamer",
-      "groene kamer",
-      "rose kamer",
-      "multiruimte",
-      "huiskamer",
-      "keuken",
-    ].map((r) => {
-      return (
-        <li key={r}>
-          <RoomMarker
-            filterHandler={(_) => filterHandler(r)}
-            key={r}
-            room={r === curFilter ? r : `dimmed ${r}`}
-            className='mx-1 h-4 w-4 border-2'
-          />
-        </li>
-      );
-    }),
+    ...renderedRooms,
   ];
 
   const filterName = (
-    <h1 className='my-2 text-center text-xl'>{curFilter ?? "allemaal"}</h1>
+    <h1 className='my-2 text-center text-xl'>
+      {curFilter?.name ?? "allemaal"}
+    </h1>
   );
   return (
     <>

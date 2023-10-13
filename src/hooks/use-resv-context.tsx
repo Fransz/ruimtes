@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import ResvContext, { type IResv, type IResvCtx } from "../context/resv";
+import ResvCtx, { type IResv, type IResvCtx } from "../context/Resv";
 
 function useResvContext() {
-  return useContext<IResvCtx>(ResvContext);
+  return useContext<IResvCtx>(ResvCtx);
 }
 
 export { type IResv };

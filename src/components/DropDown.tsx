@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Key, useEffect, useRef, useState } from "react";
 import { GoChevronDown } from "react-icons/go";
 
 interface IDropDownItem {
-  value: string;
+  key: Key;
+  value: unknown;
   label: React.JSX.Element;
 }
 
@@ -32,7 +33,7 @@ const DropDown = ({ items, selected, setSelected }: IDropDown) => {
   }, []);
 
   const renderedItems = items.map((item: IDropDownItem) => (
-    <div onClick={() => handleSelected(item)} key={item.value}>
+    <div onClick={() => handleSelected(item)} key={item.key}>
       {item.label}
     </div>
   ));

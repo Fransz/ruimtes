@@ -8,56 +8,61 @@ import {
 
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
-import { type IResv } from "../context/resv";
+import { type IResv, TActivity } from "../context/Resv";
 import DropDown, { IDropDownItem } from "./DropDown";
+import useRoomContext from "../hooks/use-room-context";
+import { IRoom } from "../context/Room";
 
 interface IRoomItem extends IDropDownItem {}
-const roomItems: IRoomItem[] = [
-  "rode kamer",
-  "groene kamer",
-  "rose kamer",
-  "multiruimte",
-  "huiskamer",
-  "keuken",
-].map((r) => {
-  return {
-    value: r,
-    label: (
-      <div className='mx-auto flex items-center px-2'>
-        <RoomMarker
-          room={r}
-          filterHandler={(e) => e}
-          className='mx-1 h-4 w-4 rounded-full border'
-        />
-        <div>{r}</div>
-      </div>
-    ),
-  };
-});
 
 interface IMonthListItem {
-  rresv: IResv;
+  resv: IResv;
   handleEdit: (i: number) => void;
   isEdit: boolean;
-  handleSave: (i: number, r: IResv) => void;
+  handleSave: (
+    id: number,
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ) => void;
   handleReset: (i: number) => void;
   handleDelete: (r: IResv) => void;
 }
 
 const MonthListItem = ({
-  rresv,
+  resv,
   handleEdit,
   isEdit,
   handleSave,
   handleReset,
   handleDelete,
 }: IMonthListItem) => {
-  const [room, setRoom] = useState(
-    roomItems.find((room) => room.value === rresv.room) ?? roomItems[0]
+  // Items for the dropdown.
+  const { rooms } = useRoomContext();
+  const roomItems = rooms.map((r) => {
+    return {
+      key: r.id,
+      value: r,
+      label: (
+        <div className='mx-auto flex items-center px-2'>
+          <RoomMarker
+            room={r}
+            filterHandler={(e) => e}
+            className='mx-1 h-4 w-4 rounded-full border'
+          />
+          <div>{r.name}</div>
+        </div>
+      ),
+    };
+  });
+
+  const [room, setRoom] = useState<IRoomItem>(
+    roomItems.find((i) => i.value.id === resv.room.id) ?? roomItems[0]
   );
-  const [activity, setActivity] = useState(rresv.activity);
-  const [timestart, setTimestart] = useState(rresv.timestart);
-  const [timeend, setTimeend] = useState(rresv.timeend);
+  const [activity, setActivity] = useState(resv.activity);
+  const [timestart, setTimestart] = useState(resv.timestart);
+  const [timeend, setTimeend] = useState(resv.timeend);
 
   const handleActivity = (e: React.ChangeEvent) =>
     setActivity((e.target as HTMLInputElement).value);
@@ -68,8 +73,7 @@ const MonthListItem = ({
   const handleRoom = (r: IRoomItem) => setRoom(r);
 
   const handleItemSave = () => {
-    const resv = { ...rresv, room: room.value, activity, timestart, timeend };
-    handleSave(rresv.id, resv);
+    handleSave(resv.id, room.value as IRoom, activity, timestart, timeend);
   };
 
   return (
@@ -85,11 +89,11 @@ const MonthListItem = ({
           ) : (
             <>
               <RoomMarker
-                room={rresv.room}
+                room={resv.room}
                 filterHandler={(e) => e}
                 className='mx-1 h-4 w-4 rounded-full border'
               />
-              <span>{rresv.room}</span>
+              <span>{resv.room.name}</span>
             </>
           )}
         </div>
@@ -97,7 +101,7 @@ const MonthListItem = ({
         <div className='flex'>
           {!isEdit && (
             <Button
-              onClick={() => handleEdit(rresv.id)}
+              onClick={() => handleEdit(resv.id)}
               className='border-none text-yellow'
             >
               <RiEditLine />
@@ -105,7 +109,7 @@ const MonthListItem = ({
           )}
           {!isEdit && (
             <Button
-              onClick={() => handleDelete(rresv)}
+              onClick={() => handleDelete(resv)}
               className='border-none text-red'
             >
               <RiDeleteBin6Line />
@@ -118,7 +122,7 @@ const MonthListItem = ({
           )}
           {isEdit && (
             <Button
-              onClick={() => handleReset(rresv.id)}
+              onClick={() => handleReset(resv.id)}
               className='border-none text-red'
             >
               <RiCloseLine />
@@ -134,7 +138,7 @@ const MonthListItem = ({
           value={activity}
         />
       ) : (
-        <div className='my-1 mr-auto'>{rresv.activity}</div>
+        <div className='my-1 mr-auto'>{resv.activity}</div>
       )}
 
       <div className='flex justify-between'>
@@ -148,7 +152,7 @@ const MonthListItem = ({
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{rresv.timestart}</span>
+            <span className='my-1 w-[3em]'>{resv.timestart}</span>
           )}
         </div>
         <div>
@@ -161,7 +165,7 @@ const MonthListItem = ({
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{rresv.timeend}</span>
+            <span className='my-1 w-[3em]'>{resv.timeend}</span>
           )}
         </div>
       </div>

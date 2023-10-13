@@ -3,12 +3,14 @@ import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
 import MonthListItem from "./MonthListItem";
 import { Dayjs } from "dayjs";
+import { IRoom } from "../context/Room";
+import { TActivity } from "../context/Resv";
 
 interface IMonthList {
   day: Dayjs;
-  room: string | undefined;
+  room: IRoom | undefined;
   closeHandler: () => void;
-  filterHandler: (r: string | undefined) => void;
+  filterHandler: (r: IRoom | undefined) => void;
 }
 
 const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
@@ -19,10 +21,16 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
     setEditIdx(i);
   };
 
-  const handleSave = (i: number, resv: IResv): void => {
-    if (i === editIdx) {
+  const handleSave = (
+    id: number,
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ): void => {
+    if (id === editIdx) {
       setEditIdx(undefined);
-      void updateResv(resv);
+      void updateResv(id, room, activity, timestart, timeend);
     }
   };
 
@@ -39,11 +47,12 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   const renderedItems: React.ReactElement[] = resvs
     .filter(
       (rresv: IResv) =>
-        rresv.date.isSame(day) && (room === undefined || rresv.room === room)
+        rresv.date.isSame(day) &&
+        (room === undefined || rresv.room.id === room.id)
     )
     .map((rresv: IResv) => (
       <MonthListItem
-        rresv={rresv}
+        resv={rresv}
         key={rresv.id}
         handleEdit={handleEdit}
         handleSave={handleSave}

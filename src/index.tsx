@@ -4,13 +4,16 @@ import { StrictMode } from "react";
 import "./index.css";
 
 import App from "./components/App";
-import { Provider } from "./context/resv";
+import { Provider as ResvProvider } from "./context/Resv";
+import { Provider as RoomProvider } from "./context/Room";
 
 const root = createRoot(document.querySelector("#root")!);
 root.render(
   <StrictMode>
-    <Provider>
-      <App />
-    </Provider>
+    <RoomProvider>
+      <ResvProvider>
+        <App />
+      </ResvProvider>
+    </RoomProvider>
   </StrictMode>
 );
