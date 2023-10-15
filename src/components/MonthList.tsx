@@ -64,14 +64,16 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
 
   return (
     <div>
-      <h1 className='text-center text-xl'>
-        {`Bezetting op ${day.format("DD MMMM YYYY")}`}
-      </h1>
       <MonthListBar
         closeHandler={closeHandler}
         filterHandler={filterHandler}
         curFilter={room}
-      />
+      >
+        <h1 className='text-center text-xl'>
+          <div>{`${day.format("DD MMMM YYYY")}`}</div>
+          <div>{`${room?.name ?? "alle ruimtes"}`}</div>
+        </h1>
+      </MonthListBar>
       <ul>{renderedItems}</ul>
     </div>
   );

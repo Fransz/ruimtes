@@ -10,7 +10,14 @@ interface IListBar {
   curFilter: IRoom | undefined;
 }
 
-const ListBar = ({ closeHandler, filterHandler, curFilter }: IListBar) => {
+type TListBar = React.PropsWithChildren<IListBar>;
+
+const ListBar = ({
+  closeHandler,
+  filterHandler,
+  curFilter,
+  children,
+}: TListBar) => {
   const { rooms } = useRoomContext();
   const renderedRooms = rooms.map((r) => {
     return (
@@ -32,11 +39,6 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }: IListBar) => {
     ...renderedRooms,
   ];
 
-  const filterName = (
-    <h1 className='my-2 text-center text-xl'>
-      {curFilter?.name ?? "allemaal"}
-    </h1>
-  );
   return (
     <>
       <div className='my-2'>
@@ -44,8 +46,8 @@ const ListBar = ({ closeHandler, filterHandler, curFilter }: IListBar) => {
           <Button onClick={(_) => console.log("not yet")}>nieuw</Button>
           <Button onClick={closeHandler}>sluit</Button>
         </div>
+        {children}
         <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
-        {filterName}
       </div>
     </>
   );
