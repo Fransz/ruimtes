@@ -6,6 +6,8 @@ import useRoomContext from "../hooks/use-room-context";
 
 interface IListBar {
   closeHandler: () => void;
+  isNew: boolean;
+  newHandler: () => void;
   filterHandler: (r: IRoom | undefined) => void;
   curFilter: IRoom | undefined;
 }
@@ -14,6 +16,8 @@ type TListBar = React.PropsWithChildren<IListBar>;
 
 const ListBar = ({
   closeHandler,
+  isNew,
+  newHandler,
   filterHandler,
   curFilter,
   children,
@@ -41,11 +45,11 @@ const ListBar = ({
 
   return (
     <>
+      <div className='my-3 flex justify-around'>
+        <Button onClick={newHandler}>{isNew ? "alle" : "nieuw"}</Button>
+        <Button onClick={closeHandler}>sluit</Button>
+      </div>
       <div className='my-2'>
-        <div className='my-3 flex justify-around'>
-          <Button onClick={(_) => console.log("not yet")}>nieuw</Button>
-          <Button onClick={closeHandler}>sluit</Button>
-        </div>
         {children}
         <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
       </div>

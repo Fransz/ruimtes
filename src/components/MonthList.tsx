@@ -15,8 +15,10 @@ interface IMonthList {
 
 const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
+  const [newItem, setNewItem] = useState<boolean>(false);
   const { resvs, deleteResv, updateResv } = useResvContext();
 
+  const handleNew = (): void => setNewItem(!newItem);
   const handleEdit = (i: number): void => {
     setEditIdx(i);
   };
@@ -44,28 +46,47 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
     void deleteResv(resv);
   };
 
-  const renderedItems: React.ReactElement[] = resvs
-    .filter(
-      (rresv: IResv) =>
-        rresv.date.isSame(day) &&
-        (room === undefined || rresv.room.id === room.id)
-    )
-    .map((rresv: IResv) => (
+  let renderedItems: React.ReactElement[] = [];
+  if (newItem) {
+    renderedItems = [
       <MonthListItem
-        resv={rresv}
-        key={rresv.id}
+        resv={undefined}
+        key='newitem'
         handleEdit={handleEdit}
         handleSave={handleSave}
         handleReset={handleReset}
         handleDelete={handleDelete}
-        isEdit={editIdx === rresv.id}
-      />
-    ));
+        isEdit={false}
+        isNew={true}
+      />,
+    ];
+  } else {
+    renderedItems = resvs
+      .filter(
+        (rresv: IResv) =>
+          rresv.date.isSame(day) &&
+          (room === undefined || rresv.room.id === room.id)
+      )
+      .map((rresv: IResv) => (
+        <MonthListItem
+          resv={rresv}
+          key={rresv.id}
+          handleEdit={handleEdit}
+          handleSave={handleSave}
+          handleReset={handleReset}
+          handleDelete={handleDelete}
+          isEdit={editIdx === rresv.id}
+          isNew={false}
+        />
+      ));
+  }
 
   return (
     <div>
       <MonthListBar
         closeHandler={closeHandler}
+        isNew={newItem}
+        newHandler={handleNew}
         filterHandler={filterHandler}
         curFilter={room}
       >
