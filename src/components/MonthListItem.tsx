@@ -12,12 +12,19 @@ import { type IResv, TActivity } from "../context/Resv";
 import DropDown, { IDropDownItem } from "./DropDown";
 import useRoomContext from "../hooks/use-room-context";
 import { IRoom } from "../context/Room";
+import { Dayjs } from "dayjs";
 
 interface IRoomItem extends IDropDownItem {}
 
 interface IMonthListItem {
   resv: IResv | undefined;
   handleEdit: (i: number) => void;
+  handleCreate: (
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ) => void;
   handleSave: (
     id: number,
     room: IRoom,
@@ -35,6 +42,7 @@ const MonthListItem = ({
   resv,
   handleEdit,
   handleSave,
+  handleCreate,
   handleReset,
   handleDelete,
   isEdit,
@@ -78,6 +86,7 @@ const MonthListItem = ({
     if (resv) {
       handleSave(resv.id, room.value as IRoom, activity, timestart, timeend);
     } else {
+      handleCreate(room.value as IRoom, activity, timestart, timeend);
     }
   };
 

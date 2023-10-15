@@ -29,21 +29,21 @@ const Month = ({ displayDate }: IMonth) => {
   /**
    * Handler for closing the list.
    */
-  const closeHandler = (): void => {
+  const handleCloseList = (): void => {
     setShowList(!showList);
   };
 
   /**
    * Handler for filtering the list.
    */
-  const filterHandler = (r: IRoom | undefined): void => {
+  const handleFilterList = (r: IRoom | undefined): void => {
     setCurrentRoom(r);
   };
 
   const first: Dayjs = dayjs.utc(displayDate).date(1);
   const last: Dayjs = dayjs.utc(first).endOf("month");
 
-  // Nr of befores; Days in week before first day.
+  // Nr of befores; Days in week before first date.
   const bf: number = first.day() === 0 ? 6 : first.day() - 1;
   const befores: React.ReactElement[] = Array.from(new Array(bf), (_, i) => (
     <NoDay key={i} />
@@ -76,11 +76,12 @@ const Month = ({ displayDate }: IMonth) => {
         </div>
         {showList && (
           <MonthList
+            className='w-[20%]'
             room={currentRoom}
-            day={currentDay ?? first}
+            date={currentDay ?? first}
             key={currentDay?.valueOf()}
-            closeHandler={closeHandler}
-            filterHandler={filterHandler}
+            handleCloseList={handleCloseList}
+            handleFilterList={handleFilterList}
           />
         )}
       </div>

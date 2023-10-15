@@ -5,20 +5,20 @@ import { IRoom } from "../context/Room";
 import useRoomContext from "../hooks/use-room-context";
 
 interface IListBar {
-  closeHandler: () => void;
+  handleCloseList: () => void;
   isNew: boolean;
-  newHandler: () => void;
-  filterHandler: (r: IRoom | undefined) => void;
+  handleNewItem: () => void;
+  handleFilterList: (r: IRoom | undefined) => void;
   curFilter: IRoom | undefined;
 }
 
 type TListBar = React.PropsWithChildren<IListBar>;
 
 const ListBar = ({
-  closeHandler,
+  handleCloseList,
   isNew,
-  newHandler,
-  filterHandler,
+  handleNewItem,
+  handleFilterList,
   curFilter,
   children,
 }: TListBar) => {
@@ -27,7 +27,7 @@ const ListBar = ({
     return (
       <li key={r.id}>
         <RoomMarker
-          filterHandler={(_) => filterHandler(r)}
+          filterHandler={(_) => handleFilterList(r)}
           room={r}
           dimmed={r.id !== curFilter?.id}
           className='mx-1 h-4 w-4 border-2'
@@ -37,7 +37,7 @@ const ListBar = ({
   });
 
   const filters = [
-    <li key='all' onClick={(_) => filterHandler(undefined)}>
+    <li key='all' onClick={(_) => handleFilterList(undefined)}>
       alle
     </li>,
     ...renderedRooms,
@@ -46,8 +46,8 @@ const ListBar = ({
   return (
     <>
       <div className='my-3 flex justify-around'>
-        <Button onClick={newHandler}>{isNew ? "alle" : "nieuw"}</Button>
-        <Button onClick={closeHandler}>sluit</Button>
+        <Button onClick={handleNewItem}>{isNew ? "alle" : "nieuw"}</Button>
+        <Button onClick={handleCloseList}>sluit</Button>
       </div>
       <div className='my-2'>
         {children}

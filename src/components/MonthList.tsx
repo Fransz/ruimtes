@@ -7,19 +7,26 @@ import { IRoom } from "../context/Room";
 import { TActivity } from "../context/Resv";
 
 interface IMonthList {
-  day: Dayjs;
+  date: Dayjs;
   room: IRoom | undefined;
-  closeHandler: () => void;
-  filterHandler: (r: IRoom | undefined) => void;
+  handleCloseList: () => void;
+  handleFilterList: (r: IRoom | undefined) => void;
+  className?: string;
 }
 
-const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
+const MonthList = ({
+  date,
+  room,
+  handleCloseList,
+  handleFilterList,
+  className,
+}: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
   const [newItem, setNewItem] = useState<boolean>(false);
-  const { resvs, deleteResv, updateResv } = useResvContext();
+  const { resvs, deleteResv, createResv, updateResv } = useResvContext();
 
-  const handleNew = (): void => setNewItem(!newItem);
-  const handleEdit = (i: number): void => {
+  const handleNewItem = (): void => setNewItem(!newItem);
+  const handleEditItem = (i: number): void => {
     setEditIdx(i);
   };
 
@@ -32,8 +39,18 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   ): void => {
     if (id === editIdx) {
       setEditIdx(undefined);
-      void updateResv(id, room, activity, timestart, timeend);
+      void updateResv(id, date, room, activity, timestart, timeend);
     }
+  };
+
+  const handleCreate = (
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ): void => {
+    setNewItem(!newItem);
+    void createResv(date, room, activity, timestart, timeend);
   };
 
   const handleReset = (i: number): void => {
@@ -52,10 +69,11 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
       <MonthListItem
         resv={undefined}
         key='newitem'
-        handleEdit={handleEdit}
+        handleEdit={handleEditItem}
         handleSave={handleSave}
         handleReset={handleReset}
         handleDelete={handleDelete}
+        handleCreate={handleCreate}
         isEdit={false}
         isNew={true}
       />,
@@ -64,17 +82,18 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
     renderedItems = resvs
       .filter(
         (rresv: IResv) =>
-          rresv.date.isSame(day) &&
+          rresv.date.isSame(date) &&
           (room === undefined || rresv.room.id === room.id)
       )
       .map((rresv: IResv) => (
         <MonthListItem
           resv={rresv}
           key={rresv.id}
-          handleEdit={handleEdit}
+          handleEdit={handleEditItem}
           handleSave={handleSave}
           handleReset={handleReset}
           handleDelete={handleDelete}
+          handleCreate={handleCreate}
           isEdit={editIdx === rresv.id}
           isNew={false}
         />
@@ -82,16 +101,16 @@ const MonthList = ({ day, room, closeHandler, filterHandler }: IMonthList) => {
   }
 
   return (
-    <div>
+    <div className={className}>
       <MonthListBar
-        closeHandler={closeHandler}
-        isNew={newItem}
-        newHandler={handleNew}
-        filterHandler={filterHandler}
+        handleCloseList={handleCloseList}
+        handleFilterList={handleFilterList}
+        handleNewItem={handleNewItem}
         curFilter={room}
+        isNew={newItem}
       >
         <h1 className='text-center text-xl'>
-          <div>{`${day.format("DD MMMM YYYY")}`}</div>
+          <div>{`${date.format("D MMMM YYYY")}`}</div>
           <div>{`${room?.name ?? "alle ruimtes"}`}</div>
         </h1>
       </MonthListBar>

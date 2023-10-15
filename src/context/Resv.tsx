@@ -19,10 +19,17 @@ interface IResv {
 
 interface IResvCtx {
   resvs: IResv[];
-  createResv: (r: IResv) => Promise<void>;
+  createResv: (
+    date: Dayjs,
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ) => Promise<void>;
   fetchResvs: () => Promise<void>;
   updateResv: (
     id: number,
+    date: Dayjs,
     room: IRoom,
     activity: TActivity,
     timestart: string,
@@ -41,12 +48,25 @@ const ResvCtx = createContext({} as IResvCtx);
 const Provider = ({ children }: { children: React.ReactNode }) => {
   const [resvs, setResvs] = useState([] as IResv[]);
 
-  const createResv = async (res: IResv): Promise<void> => {
-    const { data: r } = await axios.post(
-      "http://localhost:3001/resvs?_expand=room",
-      res
-    );
-    setResvs([...resvs, r]);
+  const createResv = async (
+    date: Dayjs,
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ): Promise<void> => {
+    const r = {
+      date: date.format("YYYY-MM-DD"),
+      activity,
+      timestart: timestart,
+      timeend: timeend,
+      roomId: room.id,
+    };
+    await axios.post("http://localhost:3001/resvs", r).then(({ data: nr }) => {
+      nr.date = dayjs.utc(nr.date, "YYYY-MM-DD");
+      nr.room = room;
+      setResvs([...resvs, nr]);
+    });
   };
 
   const fetchResvs = async (): Promise<void> => {
@@ -64,6 +84,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 
   const updateResv = async (
     id: number,
+    date: Dayjs,
     room: IRoom,
     activity: TActivity,
     timestart: string,
@@ -72,14 +93,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     const old = resvs.find((r) => r.id === id);
     if (!old) throw Error();
 
-    const upd = {
-      id,
-      date: old.date.format("YYYY-MM_DD"),
-      activity,
-      timestart: timestart,
-      timeend: timeend,
-      roomId: room.id,
-    };
+    const upd = { id, date, activity, timestart, timeend, roomId: room.id };
     const updd = { ...upd, date: old.date, room };
     await axios.put(`http://localhost:3001/resvs/${upd.id}`, upd).then(() => {
       setResvs([...resvs.filter((r) => r.id !== old.id), updd]);
