@@ -12,13 +12,19 @@ import { type IResv, TActivity } from "../context/Resv";
 import DropDown, { IDropDownItem } from "./DropDown";
 import useRoomContext from "../hooks/use-room-context";
 import { IRoom } from "../context/Room";
+import { Dayjs } from "dayjs";
 
 interface IRoomItem extends IDropDownItem {}
 
 interface IMonthListItem {
-  resv: IResv;
+  resv: IResv | undefined;
   handleEdit: (i: number) => void;
-  isEdit: boolean;
+  handleCreate: (
+    room: IRoom,
+    activity: TActivity,
+    timestart: string,
+    timeend: string
+  ) => void;
   handleSave: (
     id: number,
     room: IRoom,
@@ -28,15 +34,19 @@ interface IMonthListItem {
   ) => void;
   handleReset: (i: number) => void;
   handleDelete: (r: IResv) => void;
+  isEdit: boolean;
+  isNew: boolean;
 }
 
 const MonthListItem = ({
   resv,
   handleEdit,
-  isEdit,
   handleSave,
+  handleCreate,
   handleReset,
   handleDelete,
+  isEdit,
+  isNew,
 }: IMonthListItem) => {
   // Items for the dropdown.
   const { rooms } = useRoomContext();
@@ -58,11 +68,11 @@ const MonthListItem = ({
   });
 
   const [room, setRoom] = useState<IRoomItem>(
-    roomItems.find((i) => i.value.id === resv.room.id) ?? roomItems[0]
+    roomItems.find((i) => i.value.id === resv?.room.id) ?? roomItems[0]
   );
-  const [activity, setActivity] = useState(resv.activity);
-  const [timestart, setTimestart] = useState(resv.timestart);
-  const [timeend, setTimeend] = useState(resv.timeend);
+  const [activity, setActivity] = useState(resv?.activity || "");
+  const [timestart, setTimestart] = useState(resv?.timestart || "");
+  const [timeend, setTimeend] = useState(resv?.timeend || "");
 
   const handleActivity = (e: React.ChangeEvent) =>
     setActivity((e.target as HTMLInputElement).value);
@@ -73,14 +83,29 @@ const MonthListItem = ({
   const handleRoom = (r: IRoomItem) => setRoom(r);
 
   const handleItemSave = () => {
-    handleSave(resv.id, room.value as IRoom, activity, timestart, timeend);
+    if (resv) {
+      handleSave(resv.id, room.value as IRoom, activity, timestart, timeend);
+    } else {
+      handleCreate(room.value as IRoom, activity, timestart, timeend);
+    }
+  };
+
+  const handleItemReset = () => {
+    if (resv) {
+      handleReset(resv.id);
+    } else {
+      setRoom(roomItems[0]);
+      setActivity("");
+      setTimeend("");
+      setTimestart("");
+    }
   };
 
   return (
     <li className='mt-4 border-t pt-2'>
       <div className='flex justify-between'>
         <div className='flex items-center'>
-          {isEdit ? (
+          {isEdit || isNew ? (
             <DropDown
               items={roomItems}
               selected={room}
@@ -89,62 +114,59 @@ const MonthListItem = ({
           ) : (
             <>
               <RoomMarker
-                room={resv.room}
+                room={resv!.room}
                 filterHandler={(e) => e}
                 className='mx-1 h-4 w-4 rounded-full border'
               />
-              <span>{resv.room.name}</span>
+              <span>{resv!.room.name}</span>
             </>
           )}
         </div>
 
         <div className='flex'>
-          {!isEdit && (
+          {!isEdit && !isNew && (
             <Button
-              onClick={() => handleEdit(resv.id)}
+              onClick={() => handleEdit(resv!.id)}
               className='border-none text-yellow'
             >
               <RiEditLine />
             </Button>
           )}
-          {!isEdit && (
+          {!isEdit && !isNew && (
             <Button
-              onClick={() => handleDelete(resv)}
+              onClick={() => handleDelete(resv!)}
               className='border-none text-red'
             >
               <RiDeleteBin6Line />
             </Button>
           )}
-          {isEdit && (
+          {(isEdit || isNew) && (
             <Button onClick={handleItemSave} className='border-none text-green'>
               <RiCheckLine />
             </Button>
           )}
-          {isEdit && (
-            <Button
-              onClick={() => handleReset(resv.id)}
-              className='border-none text-red'
-            >
+          {(isEdit || isNew) && (
+            <Button onClick={handleItemReset} className='border-none text-red'>
               <RiCloseLine />
             </Button>
           )}
         </div>
       </div>
 
-      {isEdit ? (
+      {isEdit || isNew ? (
         <input
           className='my-1 mr-auto bg-white text-black'
           onChange={handleActivity}
           value={activity}
         />
       ) : (
-        <div className='my-1 mr-auto'>{resv.activity}</div>
+        <div className='my-1 mr-auto'>{resv!.activity}</div>
       )}
 
       <div className='flex justify-between'>
         <div>
           <span className='pr-2'>van:&nbsp;</span>
-          {isEdit ? (
+          {isEdit || isNew ? (
             <input
               className='my-1 bg-white text-black'
               onChange={handleTimestart}
@@ -152,12 +174,12 @@ const MonthListItem = ({
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{resv.timestart}</span>
+            <span className='my-1 w-[3em]'>{resv!.timestart}</span>
           )}
         </div>
         <div>
           <span className='pr-2'>tot:&nbsp;</span>
-          {isEdit ? (
+          {isEdit || isNew ? (
             <input
               className='my-1 bg-white text-black'
               onChange={handleTimeend}
@@ -165,7 +187,7 @@ const MonthListItem = ({
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{resv.timeend}</span>
+            <span className='my-1 w-[3em]'>{resv!.timeend}</span>
           )}
         </div>
       </div>
