@@ -1,5 +1,5 @@
 import MonthDay, { NoDay } from "./MonthDay";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MonthList from "./MonthList";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/nl";
@@ -13,6 +13,10 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   const [showList, setShowList] = useState<boolean>(false);
   const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(calendarDate);
   const [currentRoom, setCurrentRoom] = useState<IRoom | undefined>(undefined);
+
+  useEffect(() => {
+    setCurrentDay(calendarDate);
+  }, [calendarDate]);
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
@@ -80,7 +84,6 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
             className='w-[20%]'
             room={currentRoom}
             date={currentDay ?? first}
-            key={currentDay?.valueOf()}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}
             calendarDate={calendarDate}

@@ -86,7 +86,7 @@ const MonthList = ({
     renderedItems = resvs
       .filter(
         (rresv: IResv) =>
-          rresv.date.isSame(date) &&
+          rresv.date.isSame(date, "day") &&
           (room === undefined || rresv.room.id === room.id)
       )
       .map((rresv: IResv) => (
