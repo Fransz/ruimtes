@@ -12,7 +12,7 @@ interface IMonth {
 const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   const [showList, setShowList] = useState<boolean>(false);
   const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(calendarDate);
-  const [currentRoom, setCurrentRoom] = useState<IRoom | undefined>(undefined);
+  const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
   useEffect(() => {
     setCurrentDay(calendarDate);
@@ -21,14 +21,14 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
     setCurrentDay(d);
-    setCurrentRoom(undefined);
+    setFilterRooms([]);
   };
 
   const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
     e.stopPropagation();
     setShowList(true);
     setCurrentDay(d);
-    setCurrentRoom(r);
+    setFilterRooms([r]);
   };
 
   /**
@@ -41,8 +41,14 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   /**
    * Handler for filtering the list.
    */
-  const handleFilterList = (r: IRoom | undefined): void => {
-    setCurrentRoom(r);
+  const handleFilterList = (room: IRoom | undefined): void => {
+    if (room === undefined) {
+      setFilterRooms([]);
+    } else if (filterRooms.some((r) => r.id === room.id)) {
+      setFilterRooms(filterRooms.filter((r) => r.id !== room.id));
+    } else {
+      setFilterRooms([...filterRooms, room]);
+    }
   };
 
   const first: Dayjs = dayjs.utc(calendarDate).date(1);
@@ -82,7 +88,7 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
         {showList && (
           <MonthList
             className='w-[20%]'
-            room={currentRoom}
+            filterRooms={filterRooms}
             date={currentDay ?? first}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}

@@ -8,7 +8,7 @@ import { TActivity } from "../context/Resv";
 
 interface IMonthList {
   date: Dayjs;
-  room: IRoom | undefined;
+  filterRooms: IRoom[];
   handleCloseList: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
   calendarDate: Dayjs;
@@ -18,7 +18,7 @@ interface IMonthList {
 
 const MonthList = ({
   date,
-  room,
+  filterRooms,
   handleCloseList,
   handleFilterList,
   calendarDate,
@@ -67,7 +67,7 @@ const MonthList = ({
     void deleteResv(resv);
   };
 
-  let renderedItems: React.ReactElement[] = [];
+  let renderedItems: React.ReactElement[];
   if (newItem) {
     renderedItems = [
       <MonthListItem
@@ -87,7 +87,8 @@ const MonthList = ({
       .filter(
         (rresv: IResv) =>
           rresv.date.isSame(date, "day") &&
-          (room === undefined || rresv.room.id === room.id)
+          (filterRooms.length === 0 ||
+            filterRooms.some((r) => r.id === rresv.room.id))
       )
       .map((rresv: IResv) => (
         <MonthListItem
@@ -110,14 +111,13 @@ const MonthList = ({
         handleCloseList={handleCloseList}
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
-        curFilter={room}
+        filterRooms={filterRooms}
         calendarDate={calendarDate}
         handleCalendarDateChange={handleCalendarDateChange}
         isNew={newItem}
       >
         <h1 className='text-center text-xl'>
-          <div>{`${date.format("D MMMM YYYY")}`}</div>
-          <div>{`${room?.name ?? "alle ruimtes"}`}</div>
+          {`${date.format("D MMMM YYYY")}`}
         </h1>
       </MonthListBar>
       <ul>{renderedItems}</ul>

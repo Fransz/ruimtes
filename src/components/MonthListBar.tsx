@@ -1,9 +1,12 @@
+import React, { forwardRef } from "react";
+import { RiCloseLine } from "react-icons/ri";
+
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
-import React, { forwardRef, useEffect } from "react";
 import { IRoom } from "../context/Room";
 import useRoomContext from "../hooks/use-room-context";
 import { Dayjs } from "dayjs";
+
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
 
@@ -14,7 +17,7 @@ interface IListBar {
   handleFilterList: (r: IRoom | undefined) => void;
   calendarDate: Dayjs;
   handleCalendarDateChange: (d: Date | null) => void;
-  curFilter: IRoom | undefined;
+  filterRooms: IRoom[];
 }
 type TListBar = React.PropsWithChildren<IListBar>;
 
@@ -25,7 +28,7 @@ const ListBar = ({
   isNew,
   handleNewItem,
   handleFilterList,
-  curFilter,
+  filterRooms,
   calendarDate,
   handleCalendarDateChange,
   children,
@@ -37,18 +40,23 @@ const ListBar = ({
         <RoomMarker
           filterHandler={(_) => handleFilterList(r)}
           room={r}
-          dimmed={r.id !== curFilter?.id}
-          className='mx-1 h-4 w-4 border-2'
+          className={`mx-1 h-4 w-4 ${
+            filterRooms.some((fr) => fr.id === r.id)
+              ? "border-4 border-white"
+              : ""
+          }`}
         />
       </li>
     );
   });
 
   const filters = [
-    <li key='all' onClick={(_) => handleFilterList(undefined)}>
-      alle
-    </li>,
     ...renderedRooms,
+    filterRooms.length > 0 && (
+      <li key='all' onClick={(_) => handleFilterList(undefined)}>
+        <RiCloseLine />
+      </li>
+    ),
   ];
 
   let DatePickerButton = forwardRef<HTMLDivElement, { onClick?: () => void }>(
