@@ -76,7 +76,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 
     rs.map((r: IResv) => {
       const d = r.date;
-      r.date = dayjs.utc(d, "YYYY-MM-DD");
+      r.date = dayjs.utc(d, "YYYY-MM-DD").locale("nl");
       return r;
     });
     setResvs(rs);

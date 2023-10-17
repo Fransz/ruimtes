@@ -1,18 +1,24 @@
 import Button from "./Button";
 import RoomMarker from "./RoomMarker";
-import React from "react";
+import React, { forwardRef, useEffect } from "react";
 import { IRoom } from "../context/Room";
 import useRoomContext from "../hooks/use-room-context";
+import { Dayjs } from "dayjs";
+import DatePicker, { registerLocale } from "react-datepicker";
+import nl from "date-fns/locale/nl";
 
 interface IListBar {
   handleCloseList: () => void;
   isNew: boolean;
   handleNewItem: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
+  calendarDate: Dayjs;
+  handleCalendarDateChange: (d: Date | null) => void;
   curFilter: IRoom | undefined;
 }
-
 type TListBar = React.PropsWithChildren<IListBar>;
+
+registerLocale("nl", nl);
 
 const ListBar = ({
   handleCloseList,
@@ -20,6 +26,8 @@ const ListBar = ({
   handleNewItem,
   handleFilterList,
   curFilter,
+  calendarDate,
+  handleCalendarDateChange,
   children,
 }: TListBar) => {
   const { rooms } = useRoomContext();
@@ -43,10 +51,26 @@ const ListBar = ({
     ...renderedRooms,
   ];
 
+  let DatePickerButton = forwardRef<
+    React.ReactElement,
+    { onClick?: () => void }
+  >(({ onClick }, ref) => (
+    <Button onClick={onClick ?? ((e) => undefined)} ref={ref}>
+      Datum
+    </Button>
+  ));
+
   return (
     <>
       <div className='my-3 flex justify-around'>
         <Button onClick={handleNewItem}>{isNew ? "alle" : "nieuw"}</Button>
+        <DatePicker
+          onChange={(d) => handleCalendarDateChange(d)}
+          className='border border-red bg-black text-white'
+          selected={calendarDate.toDate()}
+          locale='nl'
+          customInput={<DatePickerButton />}
+        />
         <Button onClick={handleCloseList}>sluit</Button>
       </div>
       <div className='my-2'>

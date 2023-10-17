@@ -14,7 +14,7 @@ interface IMonthDay {
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
   const { resvs } = useResvContext();
   const { rooms } = useRoomContext();
-  const dayResvs = resvs.filter((r) => r.date.isSame(day));
+  const dayResvs = resvs.filter((r) => r.date.isSame(day, "day"));
 
   const renderedRooms = rooms
     .filter((r) => dayResvs.some((rresv) => rresv.room.id === r.id))

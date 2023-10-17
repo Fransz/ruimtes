@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import "dayjs/locale/nl";
 
@@ -8,20 +8,33 @@ import Month from "./Month";
 import useResvContext from "../hooks/use-resv-context";
 import useRoomContext from "../hooks/use-room-context";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 dayjs.extend(utc);
 
 function App() {
   const { fetchResvs } = useResvContext();
   const { fetchRooms } = useRoomContext();
-
-  const displayDate = dayjs.utc("2023-09-30").locale("nl");
+  const [calendarDate, setCalendarDate] = useState<Dayjs>(
+    dayjs().utc().locale("nl")
+  );
 
   useEffect(() => {
     void fetchResvs();
     void fetchRooms();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <Month displayDate={displayDate}></Month>;
+  const handleCalendarDateChange = (d: Date | null): void => {
+    if (d) setCalendarDate(dayjs.utc(d).locale("nl"));
+  };
+
+  // return <DateComponent initDate={date} />;
+  return (
+    <Month
+      calendarDate={calendarDate}
+      handleCalendarDateChange={handleCalendarDateChange}
+    ></Month>
+  );
 }
 
 export default App;
