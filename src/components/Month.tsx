@@ -1,17 +1,22 @@
 import MonthDay, { NoDay } from "./MonthDay";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MonthList from "./MonthList";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/nl";
 import { IRoom } from "../context/Room";
 
 interface IMonth {
-  displayDate: Dayjs;
+  calendarDate: Dayjs;
+  handleCalendarDateChange: (d: Date | null) => void;
 }
-const Month = ({ displayDate }: IMonth) => {
+const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   const [showList, setShowList] = useState<boolean>(false);
-  const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(undefined);
+  const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(calendarDate);
   const [currentRoom, setCurrentRoom] = useState<IRoom | undefined>(undefined);
+
+  useEffect(() => {
+    setCurrentDay(calendarDate);
+  }, [calendarDate]);
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
@@ -40,7 +45,7 @@ const Month = ({ displayDate }: IMonth) => {
     setCurrentRoom(r);
   };
 
-  const first: Dayjs = dayjs.utc(displayDate).date(1);
+  const first: Dayjs = dayjs.utc(calendarDate).date(1);
   const last: Dayjs = dayjs.utc(first).endOf("month");
 
   // Nr of befores; Days in week before first date.
@@ -67,7 +72,7 @@ const Month = ({ displayDate }: IMonth) => {
   return (
     <>
       <div className='py-6 text-center text-6xl'>
-        {displayDate.format("MMMM YYYY")}
+        {calendarDate.format("MMMM YYYY")}
       </div>
       <div className='flex'>
         <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
@@ -79,9 +84,10 @@ const Month = ({ displayDate }: IMonth) => {
             className='w-[20%]'
             room={currentRoom}
             date={currentDay ?? first}
-            key={currentDay?.valueOf()}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}
+            calendarDate={calendarDate}
+            handleCalendarDateChange={handleCalendarDateChange}
           />
         )}
       </div>

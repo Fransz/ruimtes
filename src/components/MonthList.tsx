@@ -11,6 +11,8 @@ interface IMonthList {
   room: IRoom | undefined;
   handleCloseList: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
+  calendarDate: Dayjs;
+  handleCalendarDateChange: (d: Date | null) => void;
   className?: string;
 }
 
@@ -19,6 +21,8 @@ const MonthList = ({
   room,
   handleCloseList,
   handleFilterList,
+  calendarDate,
+  handleCalendarDateChange,
   className,
 }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
@@ -82,7 +86,7 @@ const MonthList = ({
     renderedItems = resvs
       .filter(
         (rresv: IResv) =>
-          rresv.date.isSame(date) &&
+          rresv.date.isSame(date, "day") &&
           (room === undefined || rresv.room.id === room.id)
       )
       .map((rresv: IResv) => (
@@ -107,6 +111,8 @@ const MonthList = ({
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
         curFilter={room}
+        calendarDate={calendarDate}
+        handleCalendarDateChange={handleCalendarDateChange}
         isNew={newItem}
       >
         <h1 className='text-center text-xl'>
