@@ -51,14 +51,13 @@ const ListBar = ({
     ...renderedRooms,
   ];
 
-  let DatePickerButton = forwardRef<
-    React.ReactElement,
-    { onClick?: () => void }
-  >(({ onClick }, ref) => (
-    <Button onClick={onClick ?? ((e) => undefined)} ref={ref}>
-      Datum
-    </Button>
-  ));
+  let DatePickerButton = forwardRef<HTMLDivElement, { onClick?: () => void }>(
+    ({ onClick }, ref) => (
+      <div ref={ref}>
+        <Button onClick={onClick ?? ((e) => undefined)}>Datum</Button>
+      </div>
+    )
+  );
 
   return (
     <>
