@@ -10,6 +10,9 @@ import useRoomContext from "../hooks/use-room-context";
 
 import "react-datepicker/dist/react-datepicker.css";
 
+import { store } from "../store";
+import { Provider } from "react-redux";
+
 dayjs.extend(utc);
 
 function App() {
@@ -30,10 +33,12 @@ function App() {
 
   // return <DateComponent initDate={date} />;
   return (
-    <Month
-      calendarDate={calendarDate}
-      handleCalendarDateChange={handleCalendarDateChange}
-    ></Month>
+    <Provider store={store}>
+      <Month
+        calendarDate={calendarDate}
+        handleCalendarDateChange={handleCalendarDateChange}
+      />
+    </Provider>
   );
 }
 
