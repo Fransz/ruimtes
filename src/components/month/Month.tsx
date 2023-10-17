@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import MonthList from "./MonthList";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/nl";
-import { IRoom } from "../context/Room";
+import { IRoom } from "../../context/Room";
 
 interface IMonth {
   calendarDate: Dayjs;

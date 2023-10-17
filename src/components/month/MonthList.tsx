@@ -1,10 +1,10 @@
-import useResvContext, { type IResv } from "../hooks/use-resv-context";
+import useResvContext, { type IResv } from "../../hooks/use-resv-context";
 import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
 import MonthListItem from "./MonthListItem";
 import { Dayjs } from "dayjs";
-import { IRoom } from "../context/Room";
-import { TActivity } from "../context/Resv";
+import { IRoom } from "../../context/Room";
+import { TActivity } from "../../context/Resv";
 
 interface IMonthList {
   date: Dayjs;

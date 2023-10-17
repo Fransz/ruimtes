@@ -1,9 +1,9 @@
-import RoomMarker from "./RoomMarker";
-import useResvContext from "../hooks/use-resv-context";
+import RoomMarker from "../widgets/RoomMarker";
+import useResvContext from "../../hooks/use-resv-context";
 import React from "react";
 import { Dayjs } from "dayjs";
-import useRoomContext from "../hooks/use-room-context";
-import { IRoom } from "../context/Room";
+import useRoomContext from "../../hooks/use-room-context";
+import { IRoom } from "../../context/Room";
 
 interface IMonthDay {
   day: Dayjs;

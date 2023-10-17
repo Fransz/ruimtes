@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import "dayjs/locale/nl";
 
-import Month from "./Month";
+import Month from "./month/Month";
 import useResvContext from "../hooks/use-resv-context";
 import useRoomContext from "../hooks/use-room-context";
 

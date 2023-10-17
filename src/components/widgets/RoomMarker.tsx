@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import { IRoom } from "../context/Room";
+import { IRoom } from "../../context/Room";
 
 export interface IRoomMarker {
   room: IRoom;

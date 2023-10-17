@@ -1,10 +1,10 @@
 import React, { forwardRef } from "react";
 import { RiCloseLine } from "react-icons/ri";
 
-import Button from "./Button";
-import RoomMarker from "./RoomMarker";
-import { IRoom } from "../context/Room";
-import useRoomContext from "../hooks/use-room-context";
+import Button from "../widgets/Button";
+import RoomMarker from "../widgets/RoomMarker";
+import { IRoom } from "../../context/Room";
+import useRoomContext from "../../hooks/use-room-context";
 import { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
