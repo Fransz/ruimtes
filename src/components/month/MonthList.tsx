@@ -11,8 +11,7 @@ interface IMonthList {
   filterRooms: IRoom[];
   handleCloseList: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
-  calendarDate: Dayjs;
-  handleCalendarDateChange: (d: Date | null) => void;
+  handleDateChange: (d: Dayjs) => void;
   className?: string;
 }
 
@@ -21,8 +20,7 @@ const MonthList = ({
   filterRooms,
   handleCloseList,
   handleFilterList,
-  calendarDate,
-  handleCalendarDateChange,
+  handleDateChange,
   className,
 }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
@@ -112,8 +110,8 @@ const MonthList = ({
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
         filterRooms={filterRooms}
-        calendarDate={calendarDate}
-        handleCalendarDateChange={handleCalendarDateChange}
+        date={date}
+        handleDateChange={handleDateChange}
         isNew={newItem}
       >
         <h1 className='text-center text-xl'>

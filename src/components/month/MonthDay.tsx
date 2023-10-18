@@ -35,7 +35,7 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
       className='flex h-[15vh] w-[14%] flex-col justify-between border border-blue'
     >
       <div className='flex items-baseline justify-between'>
-        <div className='ml-3'>{day.utc().format("dddd")}</div>
+        <div className='ml-3'>{day.format("dddd")}</div>
         <div className='mr-3 text-[2rem]'>{day.date()}</div>
       </div>
       <div className='mb-4 flex min-h-[1rem] justify-start'>
