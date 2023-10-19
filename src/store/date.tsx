@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "./store";
 
 import dayjs, { Dayjs } from "dayjs";
@@ -15,15 +15,21 @@ const initialState: IDateState = {
 const dateSlice = createSlice({
   name: "date",
   reducers: {
-    setCurrentDate(state, action: PayloadAction<Dayjs>) {
-      state.current = action.payload.valueOf();
-    },
+    setCurrentDate: {
+      reducer(state, action: PayloadAction<number>) {
+        state.current = action.payload;
+      },
+      prepare(date: Dayjs) {
+        return { type: "date/setCurrentDate", payload: date.valueOf()}
+      }
+    }
   },
   initialState,
 });
 
-const currentDateSelector = (state: RootState): Dayjs =>
-  dayjs(state.date.current).locale("nl");
+const cdSelector = (state: RootState): number => state.date.current;
+
+const currentDateSelector = createSelector(cdSelector, d => dayjs(d).locale('nl'))
 
 export { type IDateState };
 export const dateReducer = dateSlice.reducer;
