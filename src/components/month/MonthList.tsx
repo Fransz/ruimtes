@@ -1,18 +1,16 @@
-import useResvContext, { type IResv } from "../hooks/use-resv-context";
+import useResvContext, { type IResv } from "../../hooks/use-resv-context";
 import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
 import MonthListItem from "./MonthListItem";
 import { Dayjs } from "dayjs";
-import { IRoom } from "../context/Room";
-import { TActivity } from "../context/Resv";
+import { IRoom } from "../../context/Room";
+import { TActivity } from "../../context/Resv";
 
 interface IMonthList {
   date: Dayjs;
   filterRooms: IRoom[];
   handleCloseList: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
-  calendarDate: Dayjs;
-  handleCalendarDateChange: (d: Date | null) => void;
   className?: string;
 }
 
@@ -21,8 +19,6 @@ const MonthList = ({
   filterRooms,
   handleCloseList,
   handleFilterList,
-  calendarDate,
-  handleCalendarDateChange,
   className,
 }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
@@ -112,14 +108,8 @@ const MonthList = ({
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
         filterRooms={filterRooms}
-        calendarDate={calendarDate}
-        handleCalendarDateChange={handleCalendarDateChange}
         isNew={newItem}
-      >
-        <h1 className='text-center text-xl'>
-          {`${date.format("D MMMM YYYY")}`}
-        </h1>
-      </MonthListBar>
+      ></MonthListBar>
       <ul>{renderedItems}</ul>
     </div>
   );

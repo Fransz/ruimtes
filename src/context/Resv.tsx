@@ -2,7 +2,6 @@ import axios from "axios";
 
 import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import utc from "dayjs/plugin/utc";
 
 import React, { createContext, useState } from "react";
 
@@ -40,7 +39,6 @@ interface IResvCtx {
 
 type TActivity = string;
 
-dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
 const ResvCtx = createContext({} as IResvCtx);
@@ -63,7 +61,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
       roomId: room.id,
     };
     await axios.post("http://localhost:3001/resvs", r).then(({ data: nr }) => {
-      nr.date = dayjs.utc(nr.date, "YYYY-MM-DD");
+      nr.date = dayjs(nr.date, "YYYY-MM-DD");
       nr.room = room;
       setResvs([...resvs, nr]);
     });
@@ -76,7 +74,7 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
 
     rs.map((r: IResv) => {
       const d = r.date;
-      r.date = dayjs.utc(d, "YYYY-MM-DD").locale("nl");
+      r.date = dayjs(d, "YYYY-MM-DD").locale("nl");
       return r;
     });
     setResvs(rs);

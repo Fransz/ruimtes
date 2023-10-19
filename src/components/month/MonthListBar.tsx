@@ -1,27 +1,27 @@
 import React, { forwardRef } from "react";
 import { RiCloseLine } from "react-icons/ri";
 
-import Button from "./Button";
-import RoomMarker from "./RoomMarker";
-import { IRoom } from "../context/Room";
-import useRoomContext from "../hooks/use-room-context";
-import { Dayjs } from "dayjs";
+import Button from "../widgets/Button";
+import RoomMarker from "../widgets/RoomMarker";
+import { IRoom } from "../../context/Room";
+import useRoomContext from "../../hooks/use-room-context";
+import dayjs, { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
+import { useRuimteDispatch, useStateSelector } from "../../hooks/use-store";
+import { currentDateSelector, setCurrentDate } from "../../store/store";
 
 interface IListBar {
   handleCloseList: () => void;
   isNew: boolean;
   handleNewItem: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
-  calendarDate: Dayjs;
-  handleCalendarDateChange: (d: Date | null) => void;
   filterRooms: IRoom[];
 }
 type TListBar = React.PropsWithChildren<IListBar>;
 
-registerLocale("nl", nl);
+registerLocale("nl", nl); // locale for day-fns
 
 const ListBar = ({
   handleCloseList,
@@ -29,11 +29,15 @@ const ListBar = ({
   handleNewItem,
   handleFilterList,
   filterRooms,
-  calendarDate,
-  handleCalendarDateChange,
-  children,
 }: TListBar) => {
   const { rooms } = useRoomContext();
+  const dispatch = useRuimteDispatch();
+  const date = useStateSelector(currentDateSelector);
+
+  const handleDateChange = (d: Dayjs): void => {
+    dispatch(setCurrentDate(d));
+  };
+
   const renderedRooms = rooms.map((r) => {
     return (
       <li key={r.id}>
@@ -62,7 +66,7 @@ const ListBar = ({
   let DatePickerButton = forwardRef<HTMLDivElement, { onClick?: () => void }>(
     ({ onClick }, ref) => (
       <div ref={ref}>
-        <Button onClick={onClick ?? ((e) => undefined)}>Datum</Button>
+        <Button onClick={onClick ?? ((_) => undefined)}>Datum</Button>
       </div>
     )
   );
@@ -72,18 +76,16 @@ const ListBar = ({
       <div className='my-3 flex justify-around'>
         <Button onClick={handleNewItem}>{isNew ? "alle" : "nieuw"}</Button>
         <DatePicker
-          onChange={(d) => handleCalendarDateChange(d)}
+          onChange={(d) => handleDateChange(dayjs(d))}
           className='border border-red bg-black text-white'
-          selected={calendarDate.toDate()}
+          selected={date.toDate()}
           locale='nl'
           customInput={<DatePickerButton />}
         />
         <Button onClick={handleCloseList}>sluit</Button>
       </div>
-      <div className='my-2'>
-        {children}
-        <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
-      </div>
+      <h1 className='text-center text-xl'>{`${date.format("D MMMM YYYY")}`}</h1>
+      <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
     </>
   );
 };

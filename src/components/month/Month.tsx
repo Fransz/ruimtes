@@ -1,46 +1,35 @@
-import MonthDay, { NoDay } from "./MonthDay";
-import React, { useEffect, useState } from "react";
-import MonthList from "./MonthList";
-import dayjs, { Dayjs } from "dayjs";
-import "dayjs/locale/nl";
-import { IRoom } from "../context/Room";
+import React, { useState } from "react";
 
-interface IMonth {
-  calendarDate: Dayjs;
-  handleCalendarDateChange: (d: Date | null) => void;
-}
-const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
+import dayjs, { Dayjs } from "dayjs";
+
+import MonthList from "./MonthList";
+import MonthDay, { NoDay } from "./MonthDay";
+import { IRoom } from "../../context/Room";
+import { useRuimteDispatch, useStateSelector } from "../../hooks/use-store";
+import { currentDateSelector, setCurrentDate } from "../../store/store";
+
+const Month = () => {
   const [showList, setShowList] = useState<boolean>(false);
-  const [currentDay, setCurrentDay] = useState<Dayjs | undefined>(calendarDate);
   const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
-  useEffect(() => {
-    setCurrentDay(calendarDate);
-  }, [calendarDate]);
+  const currentDate = useStateSelector(currentDateSelector);
+  const dispatch = useRuimteDispatch();
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
-    setCurrentDay(d);
     setFilterRooms([]);
+    dispatch(setCurrentDate(d));
   };
 
   const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
     e.stopPropagation();
     setShowList(true);
-    setCurrentDay(d);
+    dispatch(setCurrentDate(d));
     setFilterRooms([r]);
   };
 
-  /**
-   * Handler for closing the list.
-   */
-  const handleCloseList = (): void => {
-    setShowList(!showList);
-  };
+  const handleCloseList = (): void => setShowList(!showList);
 
-  /**
-   * Handler for filtering the list.
-   */
   const handleFilterList = (room: IRoom | undefined): void => {
     if (room === undefined) {
       setFilterRooms([]);
@@ -51,8 +40,8 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
     }
   };
 
-  const first: Dayjs = dayjs.utc(calendarDate).date(1);
-  const last: Dayjs = dayjs.utc(first).endOf("month");
+  const first: Dayjs = dayjs(currentDate).date(1);
+  const last: Dayjs = dayjs(first).endOf("month");
 
   // Nr of befores; Days in week before first date.
   const bf: number = first.day() === 0 ? 6 : first.day() - 1;
@@ -62,10 +51,7 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
 
   // All days.
   let days: React.ReactElement[] = Array.from(new Array(last.date()), (_, i) =>
-    dayjs
-      .utc(first)
-      .locale("nl")
-      .date(i + 1)
+    dayjs(first).date(i + 1)
   ).map((d, i) => (
     <MonthDay
       key={i}
@@ -78,7 +64,7 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
   return (
     <>
       <div className='py-6 text-center text-6xl'>
-        {calendarDate.format("MMMM YYYY")}
+        {currentDate.format("MMMM YYYY")}
       </div>
       <div className='flex'>
         <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
@@ -89,11 +75,9 @@ const Month = ({ calendarDate, handleCalendarDateChange }: IMonth) => {
           <MonthList
             className='w-[20%]'
             filterRooms={filterRooms}
-            date={currentDay ?? first}
+            date={currentDate}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}
-            calendarDate={calendarDate}
-            handleCalendarDateChange={handleCalendarDateChange}
           />
         )}
       </div>

@@ -1,9 +1,9 @@
-import RoomMarker from "./RoomMarker";
-import useResvContext from "../hooks/use-resv-context";
+import RoomMarker from "../widgets/RoomMarker";
+import useResvContext from "../../hooks/use-resv-context";
 import React from "react";
 import { Dayjs } from "dayjs";
-import useRoomContext from "../hooks/use-room-context";
-import { IRoom } from "../context/Room";
+import useRoomContext from "../../hooks/use-room-context";
+import { IRoom } from "../../context/Room";
 
 interface IMonthDay {
   day: Dayjs;
@@ -35,7 +35,7 @@ const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
       className='flex h-[15vh] w-[14%] flex-col justify-between border border-blue'
     >
       <div className='flex items-baseline justify-between'>
-        <div className='ml-3'>{day.utc().format("dddd")}</div>
+        <div className='ml-3'>{day.format("dddd")}</div>
         <div className='mr-3 text-[2rem]'>{day.date()}</div>
       </div>
       <div className='mb-4 flex min-h-[1rem] justify-start'>

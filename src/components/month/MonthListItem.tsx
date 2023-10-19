@@ -6,12 +6,12 @@ import {
   RiEditLine,
 } from "react-icons/ri";
 
-import Button from "./Button";
-import RoomMarker from "./RoomMarker";
-import { type IResv, TActivity } from "../context/Resv";
-import DropDown, { IDropDownItem } from "./DropDown";
-import useRoomContext from "../hooks/use-room-context";
-import { IRoom } from "../context/Room";
+import Button from "../widgets/Button";
+import RoomMarker from "../widgets/RoomMarker";
+import { type IResv, TActivity } from "../../context/Resv";
+import DropDown, { IDropDownItem } from "../widgets/DropDown";
+import useRoomContext from "../../hooks/use-room-context";
+import { IRoom } from "../../context/Room";
 
 interface IRoomItem extends IDropDownItem {}
 
