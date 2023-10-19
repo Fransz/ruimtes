@@ -28,13 +28,7 @@ const Month = () => {
     setFilterRooms([r]);
   };
 
-  const handleDateChange = (d: Dayjs): void => {
-    dispatch(setCurrentDate(d));
-  };
-
-  const handleCloseList = (): void => {
-    setShowList(!showList);
-  };
+  const handleCloseList = (): void => setShowList(!showList);
 
   const handleFilterList = (room: IRoom | undefined): void => {
     if (room === undefined) {
@@ -82,7 +76,6 @@ const Month = () => {
             className='w-[20%]'
             filterRooms={filterRooms}
             date={currentDate}
-            handleDateChange={handleDateChange}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}
           />

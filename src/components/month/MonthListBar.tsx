@@ -9,19 +9,19 @@ import dayjs, { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
+import { useRuimteDispatch, useStateSelector } from "../../hooks/use-store";
+import { currentDateSelector, setCurrentDate } from "../../store/store";
 
 interface IListBar {
   handleCloseList: () => void;
   isNew: boolean;
   handleNewItem: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
-  date: Dayjs;
-  handleDateChange: (d: Dayjs) => void;
   filterRooms: IRoom[];
 }
 type TListBar = React.PropsWithChildren<IListBar>;
 
-registerLocale("nl", nl);
+registerLocale("nl", nl); // locale for day-fns
 
 const ListBar = ({
   handleCloseList,
@@ -29,11 +29,15 @@ const ListBar = ({
   handleNewItem,
   handleFilterList,
   filterRooms,
-  date,
-  handleDateChange,
-  children,
 }: TListBar) => {
   const { rooms } = useRoomContext();
+  const dispatch = useRuimteDispatch();
+  const date = useStateSelector(currentDateSelector);
+
+  const handleDateChange = (d: Dayjs): void => {
+    dispatch(setCurrentDate(d));
+  };
+
   const renderedRooms = rooms.map((r) => {
     return (
       <li key={r.id}>
@@ -62,7 +66,7 @@ const ListBar = ({
   let DatePickerButton = forwardRef<HTMLDivElement, { onClick?: () => void }>(
     ({ onClick }, ref) => (
       <div ref={ref}>
-        <Button onClick={onClick ?? ((e) => undefined)}>Datum</Button>
+        <Button onClick={onClick ?? ((_) => undefined)}>Datum</Button>
       </div>
     )
   );
@@ -80,10 +84,8 @@ const ListBar = ({
         />
         <Button onClick={handleCloseList}>sluit</Button>
       </div>
-      <div className='my-2'>
-        {children}
-        <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
-      </div>
+      <h1 className='text-center text-xl'>{`${date.format("D MMMM YYYY")}`}</h1>
+      <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
     </>
   );
 };
