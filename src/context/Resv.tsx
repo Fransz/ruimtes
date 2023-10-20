@@ -25,7 +25,6 @@ interface IResvCtx {
     timestart: string,
     timeend: string
   ) => Promise<void>;
-  fetchResvs: () => Promise<void>;
   updateResv: (
     id: number,
     date: Dayjs,
@@ -67,19 +66,6 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const fetchResvs = async (): Promise<void> => {
-    const { data: rs } = await axios.get(
-      "http://localhost:3001/resvs?_expand=room"
-    );
-
-    rs.map((r: IResv) => {
-      const d = r.date;
-      r.date = dayjs(d, "YYYY-MM-DD").locale("nl");
-      return r;
-    });
-    setResvs(rs);
-  };
-
   const updateResv = async (
     id: number,
     date: Dayjs,
@@ -109,7 +95,6 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
     createResv,
     updateResv,
     deleteResv,
-    fetchResvs,
   };
 
   return <ResvCtx.Provider value={ctx}>{children}</ResvCtx.Provider>;

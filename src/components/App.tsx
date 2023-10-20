@@ -1,28 +1,27 @@
 import { useEffect } from "react";
 
-import Month from "./month/Month";
-import useResvContext from "../hooks/use-resv-context";
+import { EStatus, fetchResvs } from "../store/resv";
+import { useRootDispatch, useStateSelector } from "../hooks/use-store";
 import useRoomContext from "../hooks/use-room-context";
 
-import "react-datepicker/dist/react-datepicker.css";
+import Month from "./month/Month";
 
-import { store } from "../store/store";
-import { Provider } from "react-redux";
+import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
 
 function App() {
-  const { fetchResvs } = useResvContext();
   const { fetchRooms } = useRoomContext();
+  const fetchStatus = useStateSelector((state) => state.resvs.status);
+  const dispatch = useRootDispatch();
 
   useEffect(() => {
-    void fetchResvs();
     void fetchRooms();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchRooms]);
 
-  return (
-    <Provider store={store}>
-      <Month />
-    </Provider>
-  );
+  useEffect(() => {
+    if (fetchStatus === EStatus.IDLE) dispatch(fetchResvs());
+  }, [dispatch, fetchStatus]);
+
+  return <Month />;
 }
 
 export default App;
