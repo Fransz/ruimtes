@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 import MonthList from "./MonthList";
 import MonthDay, { NoDay } from "./MonthDay";
 import { IRoom } from "../../context/Room";
-import { useRuimteDispatch, useStateSelector } from "../../hooks/use-store";
+import { useRootDispatch, useStateSelector } from "../../hooks/use-store";
 import { currentDateSelector, setCurrentDate } from "../../store/store";
 
 const Month = () => {
@@ -13,7 +13,7 @@ const Month = () => {
   const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
   const currentDate = useStateSelector(currentDateSelector);
-  const dispatch = useRuimteDispatch();
+  const dispatch = useRootDispatch();
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);

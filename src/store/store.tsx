@@ -9,4 +9,4 @@ const store = configureStore({
 
 export { store, setCurrentDate, currentDateSelector };
 export type RootState = ReturnType<typeof store.getState>;
-export type RuimteDispatch = typeof store.dispatch;
+export type RootDispatch = typeof store.dispatch;
