@@ -8,7 +8,7 @@ import Month from "./month/Month";
 
 import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
 
-function App() {
+const App = () => {
   const { fetchRooms } = useRoomContext();
   const fetchStatus = useAppSelector((state) => state.resvs.status);
   const dispatch = useAppDispatch();
@@ -22,13 +22,15 @@ function App() {
   }, [dispatch, fetchStatus]);
 
   switch (fetchStatus) {
-    case EStatus.LOADING:
-      return <div>Loading....</div>;
     case EStatus.FAILED:
       return <div>Error!</div>;
     case EStatus.SUCCEEDED:
       return <Month />;
+    case EStatus.LOADING:
+      return <div>Loading....</div>;
+    default:
+      return <div>Dunno!</div>;
   }
-}
+};
 
 export default App;

@@ -9,8 +9,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
-import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
-import { currentDateSelector, setCurrentDate } from "../../store/store";
+import useDateContext from "../../hooks/use-date-context";
 
 interface IListBar {
   handleCloseList: () => void;
@@ -31,11 +30,10 @@ const ListBar = ({
   filterRooms,
 }: TListBar) => {
   const { rooms } = useRoomContext();
-  const dispatch = useAppDispatch();
-  const date = useAppSelector(currentDateSelector);
+  const { currentDay, setCurrentDay } = useDateContext();
 
   const handleDateChange = (d: Dayjs): void => {
-    dispatch(setCurrentDate(d));
+    setCurrentDay(d);
   };
 
   const renderedRooms = rooms.map((r) => {
@@ -78,13 +76,15 @@ const ListBar = ({
         <DatePicker
           onChange={(d) => handleDateChange(dayjs(d))}
           className='border border-red bg-black text-white'
-          selected={date.toDate()}
+          selected={currentDay.toDate()}
           locale='nl'
           customInput={<DatePickerButton />}
         />
         <Button onClick={handleCloseList}>sluit</Button>
       </div>
-      <h1 className='text-center text-xl'>{`${date.format("D MMMM YYYY")}`}</h1>
+      <h1 className='text-center text-xl'>{`${currentDay.format(
+        "D MMMM YYYY"
+      )}`}</h1>
       <ul className='mt-4 flex justify-around align-top'>{filters}</ul>
     </>
   );

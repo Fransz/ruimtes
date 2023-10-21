@@ -1,15 +1,17 @@
-import useResvContext, { type IResv } from "../../hooks/use-resv-context";
-import MonthListBar from "./MonthListBar";
 import React, { useState } from "react";
+
+import MonthListBar from "./MonthListBar";
 import MonthListItem from "./MonthListItem";
-import { Dayjs } from "dayjs";
 import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
+
+import useDateContext from "../../hooks/use-date-context";
+import useResvContext, { type IResv } from "../../hooks/use-resv-context";
 import { useAppSelector } from "../../hooks/use-store";
+
 import { resvsByDateSelector } from "../../store/resv";
 
 interface IMonthList {
-  date: Dayjs;
   filterRooms: IRoom[];
   handleCloseList: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
@@ -17,7 +19,6 @@ interface IMonthList {
 }
 
 const MonthList = ({
-  date,
   filterRooms,
   handleCloseList,
   handleFilterList,
@@ -25,9 +26,13 @@ const MonthList = ({
 }: IMonthList) => {
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
   const [newItem, setNewItem] = useState<boolean>(false);
+
+  const { currentDay } = useDateContext();
   const { deleteResv, createResv, updateResv } = useResvContext();
 
-  const resvs = useAppSelector((state) => resvsByDateSelector(state, date));
+  const resvs = useAppSelector((state) =>
+    resvsByDateSelector(state, currentDay)
+  );
 
   const handleNewItem = (): void => setNewItem(!newItem);
   const handleEditItem = (i: number): void => {
@@ -43,7 +48,7 @@ const MonthList = ({
   ): void => {
     if (id === editIdx) {
       setEditIdx(undefined);
-      void updateResv(id, date, room, activity, timestart, timeend);
+      void updateResv(id, currentDay, room, activity, timestart, timeend);
     }
   };
 
@@ -54,7 +59,7 @@ const MonthList = ({
     timeend: string
   ): void => {
     setNewItem(!newItem);
-    void createResv(date, room, activity, timestart, timeend);
+    void createResv(currentDay, room, activity, timestart, timeend);
   };
 
   const handleReset = (i: number): void => {
@@ -86,7 +91,7 @@ const MonthList = ({
     renderedItems = resvs
       .filter(
         (rresv: IResv) =>
-          rresv.date.isSame(date, "day") &&
+          rresv.date.isSame(currentDay, "day") &&
           (filterRooms.length === 0 ||
             filterRooms.some((r) => r.id === rresv.room.id))
       )

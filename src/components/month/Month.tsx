@@ -1,32 +1,30 @@
 import React, { useState } from "react";
 
-import dayjs, { Dayjs } from "dayjs";
-
 import MonthList from "./MonthList";
 import MonthDay, { NoDay } from "./MonthDay";
 import { IRoom } from "../../context/Room";
 
-import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
-import { currentDateSelector, setCurrentDate } from "../../store/store";
+import useDateContext from "../../hooks/use-date-context";
+
+import dayjs, { Dayjs } from "dayjs";
 
 const Month = () => {
   const [showList, setShowList] = useState<boolean>(false);
   const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
-  const dispatch = useAppDispatch();
-  const currentDate = useAppSelector(currentDateSelector);
+  const { currentDay, setCurrentDay } = useDateContext();
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
     setFilterRooms([]);
-    dispatch(setCurrentDate(d));
+    setCurrentDay(d);
   };
 
   const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
     e.stopPropagation();
     setShowList(true);
-    dispatch(setCurrentDate(d));
     setFilterRooms([r]);
+    setCurrentDay(d);
   };
 
   const handleCloseList = (): void => setShowList(!showList);
@@ -41,7 +39,7 @@ const Month = () => {
     }
   };
 
-  const first: Dayjs = dayjs(currentDate).date(1);
+  const first: Dayjs = dayjs(currentDay).date(1);
   const last: Dayjs = dayjs(first).endOf("month");
 
   // Nr of befores; Days in week before first date.
@@ -65,7 +63,7 @@ const Month = () => {
   return (
     <>
       <div className='py-6 text-center text-6xl'>
-        {currentDate.format("MMMM YYYY")}
+        {currentDay.format("MMMM YYYY")}
       </div>
       <div className='flex'>
         <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
@@ -76,7 +74,6 @@ const Month = () => {
           <MonthList
             className='w-[20%]'
             filterRooms={filterRooms}
-            date={currentDate}
             handleCloseList={handleCloseList}
             handleFilterList={handleFilterList}
           />
