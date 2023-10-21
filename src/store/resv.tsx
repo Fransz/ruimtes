@@ -18,9 +18,8 @@ enum EStatus {
 }
 
 interface IResv {
-  date: Dayjs;
-  timestart: string;
-  timeend: string;
+  startTime: Dayjs;
+  endTime: Dayjs;
   activity: string;
   room: IRoom;
   id: number;
@@ -66,19 +65,36 @@ const resvsSlice = createSlice({
 
 export const resvsReducer = resvsSlice.reducer;
 
+/**
+ * A selector for all reservations.
+ * The selector selects all reservations as IResv;
+ */
 export const resvsSelector = createSelector(
   (state: RootState) => state.resvs.resvs,
   (rs) => {
     return rs.map((r): IResv => {
-      const date = dayjs(r.date, "YYYY-MM-DD").locale("nl");
-      return { ...r, date };
+      const startTime = dayjs(
+        `${r.date} ${r.timestart}`,
+        "YYYY-MM-DD HH:mm"
+      ).locale("nl");
+      const endTime = dayjs(
+        `${r.date} ${r.timeend}`,
+        "YYYY-MM-DD HH:mm"
+      ).locale("nl");
+      return {
+        id: r.id,
+        activity: r.activity,
+        room: r.room,
+        startTime,
+        endTime,
+      };
     });
   }
 );
 
 export const resvsByDateSelector = createSelector(
   [resvsSelector, (_, day) => day],
-  (resvs, day) => resvs.filter((r) => r.date.isSame(day, "day"))
+  (resvs, day) => resvs.filter((r) => day.isSame(r.startTime, "day"))
 );
 
 export const statusSelector = (state: RootState) => state.resvs.status;

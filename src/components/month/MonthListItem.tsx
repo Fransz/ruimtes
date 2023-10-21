@@ -8,10 +8,11 @@ import {
 
 import Button from "../widgets/Button";
 import RoomMarker from "../widgets/RoomMarker";
-import { type IResv, TActivity } from "../../context/Resv";
+import { TActivity } from "../../context/Resv";
 import DropDown, { IDropDownItem } from "../widgets/DropDown";
 import useRoomContext from "../../hooks/use-room-context";
 import { IRoom } from "../../context/Room";
+import { IResv } from "../../store/resv";
 
 interface IRoomItem extends IDropDownItem {}
 
@@ -66,26 +67,31 @@ const MonthListItem = ({
     };
   });
 
-  const [room, setRoom] = useState<IRoomItem>(
-    roomItems.find((i) => i.value.id === resv?.room.id) ?? roomItems[0]
-  );
-  const [activity, setActivity] = useState(resv?.activity || "");
-  const [timestart, setTimestart] = useState(resv?.timestart || "");
-  const [timeend, setTimeend] = useState(resv?.timeend || "");
+  // State for displaying, editting and new items.
+  const rms =
+    roomItems.find((i) => i.value.id === resv?.room.id) ?? roomItems[0];
+  const st = resv?.startTime.format("HH:mm") || "";
+  const et = resv?.endTime.format("HH:mm") || "";
+  const act = resv?.activity || "";
+
+  const [room, setRoom] = useState<IRoomItem>(rms);
+  const [activity, setActivity] = useState(act);
+  const [startTime, setStartTime] = useState(st);
+  const [endTime, setEndTime] = useState(et);
 
   const handleActivity = (e: React.ChangeEvent) =>
     setActivity((e.target as HTMLInputElement).value);
   const handleTimestart = (e: React.ChangeEvent) =>
-    setTimestart((e.target as HTMLInputElement).value);
+    setStartTime((e.target as HTMLInputElement).value);
   const handleTimeend = (e: React.ChangeEvent) =>
-    setTimeend((e.target as HTMLInputElement).value);
+    setEndTime((e.target as HTMLInputElement).value);
   const handleRoom = (r: IRoomItem) => setRoom(r);
 
   const handleItemSave = () => {
     if (resv) {
-      handleSave(resv.id, room.value as IRoom, activity, timestart, timeend);
+      handleSave(resv.id, room.value as IRoom, activity, startTime, endTime);
     } else {
-      handleCreate(room.value as IRoom, activity, timestart, timeend);
+      handleCreate(room.value as IRoom, activity, startTime, endTime);
     }
   };
 
@@ -95,8 +101,8 @@ const MonthListItem = ({
     } else {
       setRoom(roomItems[0]);
       setActivity("");
-      setTimeend("");
-      setTimestart("");
+      setEndTime("");
+      setStartTime("");
     }
   };
 
@@ -159,7 +165,7 @@ const MonthListItem = ({
           value={activity}
         />
       ) : (
-        <div className='my-1 mr-auto'>{resv!.activity}</div>
+        <div className='my-1 mr-auto'>{activity}</div>
       )}
 
       <div className='flex justify-between'>
@@ -169,11 +175,11 @@ const MonthListItem = ({
             <input
               className='my-1 bg-white text-black'
               onChange={handleTimestart}
-              value={timestart}
+              value={startTime}
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{resv!.timestart}</span>
+            <span className='my-1 w-[3em]'>{startTime}</span>
           )}
         </div>
         <div>
@@ -182,11 +188,11 @@ const MonthListItem = ({
             <input
               className='my-1 bg-white text-black'
               onChange={handleTimeend}
-              value={timeend}
+              value={endTime}
               type='time'
             />
           ) : (
-            <span className='my-1 w-[3em]'>{resv!.timeend}</span>
+            <span className='my-1 w-[3em]'>{endTime}</span>
           )}
         </div>
       </div>

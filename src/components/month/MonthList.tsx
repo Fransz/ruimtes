@@ -6,7 +6,8 @@ import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
 
 import useDateContext from "../../hooks/use-date-context";
-import useResvContext, { type IResv } from "../../hooks/use-resv-context";
+import useResvContext from "../../hooks/use-resv-context";
+import type { IResv } from "../../store/resv";
 import { useAppSelector } from "../../hooks/use-store";
 
 import { resvsByDateSelector } from "../../store/resv";
@@ -71,7 +72,7 @@ const MonthList = ({
   };
 
   const handleDelete = (resv: IResv): void => {
-    void deleteResv(resv);
+    // void deleteResv(resv);
   };
 
   let renderedItems: React.ReactElement[];
@@ -92,21 +93,21 @@ const MonthList = ({
   } else {
     renderedItems = resvs
       .filter(
-        (rresv: IResv) =>
-          rresv.date.isSame(currentDay, "day") &&
+        (resv: IResv) =>
+          currentDay.isSame(resv.startTime, "day") &&
           (filterRooms.length === 0 ||
-            filterRooms.some((r) => r.id === rresv.room.id))
+            filterRooms.some((r) => r.id === resv.room.id))
       )
-      .map((rresv: IResv) => (
+      .map((resv: IResv) => (
         <MonthListItem
-          resv={rresv}
-          key={rresv.id}
+          resv={resv}
+          key={resv.id}
           handleEdit={handleEditItem}
           handleSave={handleSave}
           handleReset={handleReset}
           handleDelete={handleDelete}
           handleCreate={handleCreate}
-          isEdit={editIdx === rresv.id}
+          isEdit={editIdx === resv.id}
           isNew={false}
         />
       ));
