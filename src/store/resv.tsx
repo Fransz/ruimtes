@@ -17,15 +17,6 @@ enum EStatus {
   FAILED = "failed",
 }
 
-interface IResvDb {
-  date: string;
-  timestart: string;
-  timeend: string;
-  activity: string;
-  room: IRoom;
-  id: number;
-}
-
 interface IResv {
   date: Dayjs;
   timestart: string;
@@ -36,7 +27,7 @@ interface IResv {
 }
 
 interface IResvsState {
-  resvs: IResvDb[];
+  resvs: any[];
   status: EStatus;
   error: string | null;
 }
@@ -89,5 +80,7 @@ export const resvsByDateSelector = createSelector(
   [resvsSelector, (_, day) => day],
   (resvs, day) => resvs.filter((r) => r.date.isSame(day, "day"))
 );
+
+export const statusSelector = (state: RootState) => state.resvs.status;
 
 export { EStatus, type IResv, type IResvsState };

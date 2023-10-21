@@ -21,7 +21,14 @@ function App() {
     if (fetchStatus === EStatus.IDLE) dispatch(fetchResvs());
   }, [dispatch, fetchStatus]);
 
-  return <Month />;
+  switch (fetchStatus) {
+    case EStatus.LOADING:
+      return <div>Loading....</div>;
+    case EStatus.FAILED:
+      return <div>Error!</div>;
+    case EStatus.SUCCEEDED:
+      return <Month />;
+  }
 }
 
 export default App;
