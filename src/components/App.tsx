@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { EStatus, fetchResvs } from "../store/resv";
+import { EStatus, fetchResvs, statusSelector } from "../store/resv";
 import { useAppDispatch, useAppSelector } from "../hooks/use-store";
 import useRoomContext from "../hooks/use-room-context";
 
@@ -10,7 +10,7 @@ import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
 
 const App = () => {
   const { fetchRooms } = useRoomContext();
-  const fetchStatus = useAppSelector((state) => state.resvs.status);
+  const fetchStatus = useAppSelector(statusSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

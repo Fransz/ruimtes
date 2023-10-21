@@ -82,5 +82,4 @@ export const resvsByDateSelector = createSelector(
 );
 
 export const statusSelector = (state: RootState) => state.resvs.status;
-
 export { EStatus, type IResv, type IResvsState };

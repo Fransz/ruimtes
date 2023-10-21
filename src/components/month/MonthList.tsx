@@ -24,9 +24,11 @@ const MonthList = ({
   handleFilterList,
   className,
 }: IMonthList) => {
+  // Are we editting, creating a new item?
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
   const [newItem, setNewItem] = useState<boolean>(false);
 
+  // Our current day.
   const { currentDay } = useDateContext();
   const { deleteResv, createResv, updateResv } = useResvContext();
 
