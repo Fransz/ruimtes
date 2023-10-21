@@ -26,12 +26,11 @@ const dateSlice = createSlice({
   },
   initialState,
 });
+const dateReducer = dateSlice.reducer;
 
 const cdSelector = (state: RootState): number => state.date.current;
-
 const currentDateSelector = createSelector(cdSelector, d => dayjs(d).locale('nl'))
 
 export { type IDateState };
-export const dateReducer = dateSlice.reducer;
-export { currentDateSelector };
+export { currentDateSelector, dateReducer  };
 export const { setCurrentDate } = dateSlice.actions;

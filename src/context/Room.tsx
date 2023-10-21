@@ -17,9 +17,10 @@ const Provider = ({ children }: { children: React.ReactElement }) => {
   const [rooms, setRooms] = useState([] as IRoom[]);
 
   const fetchRooms = async (): Promise<void> => {
-    axios.get("http://localhost:3001/rooms").then(({ data: rs }) => {
-      setRooms(rs);
-    });
+    if (rooms.length === 0)
+      axios.get("http://localhost:3001/rooms").then(({ data: rs }) => {
+        setRooms(rs);
+      });
   };
 
   const ctx = {

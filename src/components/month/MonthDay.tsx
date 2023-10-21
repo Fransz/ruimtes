@@ -1,9 +1,10 @@
 import RoomMarker from "../widgets/RoomMarker";
-import useResvContext from "../../hooks/use-resv-context";
 import React from "react";
 import { Dayjs } from "dayjs";
 import useRoomContext from "../../hooks/use-room-context";
 import { IRoom } from "../../context/Room";
+import { useStateSelector } from "../../hooks/use-store";
+import { IResv, resvsByDateSelector } from "../../store/resv";
 
 interface IMonthDay {
   day: Dayjs;
@@ -12,12 +13,12 @@ interface IMonthDay {
 }
 
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
-  const { resvs } = useResvContext();
   const { rooms } = useRoomContext();
-  const dayResvs = resvs.filter((r) => r.date.isSame(day, "day"));
+
+  const dayResvs = useStateSelector((state) => resvsByDateSelector(state, day));
 
   const renderedRooms = rooms
-    .filter((r) => dayResvs.some((rresv) => rresv.room.id === r.id))
+    .filter((r) => dayResvs.some((resv: IResv) => resv.room.id === r.id))
     .map((r) => {
       return (
         <RoomMarker
