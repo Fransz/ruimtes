@@ -9,7 +9,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
-import { useRootDispatch, useStateSelector } from "../../hooks/use-store";
+import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 import { currentDateSelector, setCurrentDate } from "../../store/store";
 
 interface IListBar {
@@ -31,8 +31,8 @@ const ListBar = ({
   filterRooms,
 }: TListBar) => {
   const { rooms } = useRoomContext();
-  const dispatch = useRootDispatch();
-  const date = useStateSelector(currentDateSelector);
+  const dispatch = useAppDispatch();
+  const date = useAppSelector(currentDateSelector);
 
   const handleDateChange = (d: Dayjs): void => {
     dispatch(setCurrentDate(d));

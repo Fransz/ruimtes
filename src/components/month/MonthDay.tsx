@@ -3,7 +3,7 @@ import React from "react";
 import { Dayjs } from "dayjs";
 import useRoomContext from "../../hooks/use-room-context";
 import { IRoom } from "../../context/Room";
-import { useStateSelector } from "../../hooks/use-store";
+import { useAppSelector } from "../../hooks/use-store";
 import { IResv, resvsByDateSelector } from "../../store/resv";
 
 interface IMonthDay {
@@ -15,7 +15,7 @@ interface IMonthDay {
 const MonthDay = ({ day, dayClickHandler, roomClickHandler }: IMonthDay) => {
   const { rooms } = useRoomContext();
 
-  const dayResvs = useStateSelector((state) => resvsByDateSelector(state, day));
+  const dayResvs = useAppSelector((state) => resvsByDateSelector(state, day));
 
   const renderedRooms = rooms
     .filter((r) => dayResvs.some((resv: IResv) => resv.room.id === r.id))

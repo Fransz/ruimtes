@@ -5,7 +5,7 @@ import MonthListItem from "./MonthListItem";
 import { Dayjs } from "dayjs";
 import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
-import { useStateSelector } from "../../hooks/use-store";
+import { useAppSelector } from "../../hooks/use-store";
 import { resvsByDateSelector } from "../../store/resv";
 
 interface IMonthList {
@@ -27,7 +27,7 @@ const MonthList = ({
   const [newItem, setNewItem] = useState<boolean>(false);
   const { deleteResv, createResv, updateResv } = useResvContext();
 
-  const resvs = useStateSelector((state) => resvsByDateSelector(state, date));
+  const resvs = useAppSelector((state) => resvsByDateSelector(state, date));
 
   const handleNewItem = (): void => setNewItem(!newItem);
   const handleEditItem = (i: number): void => {

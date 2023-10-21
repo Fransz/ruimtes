@@ -6,15 +6,15 @@ import MonthList from "./MonthList";
 import MonthDay, { NoDay } from "./MonthDay";
 import { IRoom } from "../../context/Room";
 
-import { useRootDispatch, useStateSelector } from "../../hooks/use-store";
+import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 import { currentDateSelector, setCurrentDate } from "../../store/store";
 
 const Month = () => {
   const [showList, setShowList] = useState<boolean>(false);
   const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
-  const dispatch = useRootDispatch();
-  const currentDate = useStateSelector(currentDateSelector);
+  const dispatch = useAppDispatch();
+  const currentDate = useAppSelector(currentDateSelector);
 
   const dayClickHandler = (d: Dayjs): void => {
     setShowList(true);
