@@ -85,9 +85,9 @@ export const resvsSelector = createSelector(
   }
 );
 
-export const resvsByDateSelector = (d: Dayjs) =>
-  createSelector([resvsSelector], (resvs) =>
-    resvs.filter((r) => r.date.isSame(d, "day"))
-  );
+export const resvsByDateSelector = createSelector(
+  [resvsSelector, (_, day) => day],
+  (resvs, day) => resvs.filter((r) => r.date.isSame(day, "day"))
+);
 
 export { EStatus, type IResv, type IResvsState };

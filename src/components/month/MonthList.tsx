@@ -27,7 +27,7 @@ const MonthList = ({
   const [newItem, setNewItem] = useState<boolean>(false);
   const { deleteResv, createResv, updateResv } = useResvContext();
 
-  const resvs = useStateSelector(resvsByDateSelector(date));
+  const resvs = useStateSelector((state) => resvsByDateSelector(state, date));
 
   const handleNewItem = (): void => setNewItem(!newItem);
   const handleEditItem = (i: number): void => {
