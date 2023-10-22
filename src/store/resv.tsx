@@ -24,7 +24,7 @@ interface IResv {
   room: IRoom;
   id: number;
 }
-interface IResvStored {
+interface IResvStore {
   activity: string;
   date: string;
   timestart: string;
@@ -32,12 +32,14 @@ interface IResvStored {
   roomId: number;
   id: number;
 }
-interface IResvFetched extends IResvStored {
+interface IResvFetch extends IResvStore {
   room: IRoom;
 }
 
+type IUpdateData = Omit<IResvStore, "date" | "roomId"> & { room: IRoom };
+
 interface IResvsState {
-  resvs: IResvFetched[];
+  resvs: IResvFetch[];
   status: EStatus;
   error: string | null;
 }
@@ -55,15 +57,8 @@ export const fetchResvs = createAsyncThunk("resvs/fetch", async () => {
   return resvs;
 });
 
-interface IUpdateData {
-  id: number;
-  room: IRoom;
-  activity: string;
-  timestart: string;
-  timeend: string;
-}
 export const updateResv = createAsyncThunk<
-  IResvFetched[],
+  IResvFetch[],
   IUpdateData,
   { state: RootState }
 >("resvs/update", async (data, { getState }) => {
@@ -76,7 +71,7 @@ export const updateResv = createAsyncThunk<
     `http://localhost:3001/resvs/${id}`,
     nw
   );
-  return [...resvs, { ...stored, room }] as IResvFetched[];
+  return [...resvs, { ...stored, room }] as IResvFetch[];
 });
 
 export const createResv = createAsyncThunk(
