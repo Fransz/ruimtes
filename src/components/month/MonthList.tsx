@@ -6,9 +6,9 @@ import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
 
 import useDateContext from "../../hooks/use-date-context";
-import useResvContext from "../../hooks/use-resv-context";
 import type { IResv } from "../../store/resv";
-import { useAppSelector } from "../../hooks/use-store";
+import { updateResv, createResv, deleteResv } from "../../store/resv";
+import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 
 import { resvsByDateSelector } from "../../store/resv";
 import MonthListItemNew from "./MonthListItemNew";
@@ -27,13 +27,11 @@ const MonthList = ({
   handleFilterList,
   className,
 }: IMonthList) => {
-  // Are we editting, creating a new item?
   const [editIdx, setEditIdx] = useState<number | undefined>(undefined);
   const [newItem, setNewItem] = useState<boolean>(false);
 
-  // Our current day.
   const { currentDay } = useDateContext();
-  const { deleteResv, createResv, updateResv } = useResvContext();
+  const dispatch = useAppDispatch();
 
   const resvs = useAppSelector((state) =>
     resvsByDateSelector(state, currentDay)
@@ -47,13 +45,20 @@ const MonthList = ({
   const handleSave = (
     id: number,
     room: IRoom,
-    activity: TActivity,
-    timestart: string,
-    timeend: string
+    activity: string,
+    startTime: string,
+    endTime: string
   ): void => {
+    const data = {
+      id,
+      room,
+      activity,
+      timestart: startTime,
+      timeend: endTime,
+    };
     if (id === editIdx) {
       setEditIdx(undefined);
-      void updateResv(id, currentDay, room, activity, timestart, timeend);
+      dispatch(updateResv(data));
     }
   };
 
@@ -63,8 +68,11 @@ const MonthList = ({
     timestart: string,
     timeend: string
   ): void => {
-    setNewItem(false);
-    void createResv(currentDay, room, activity, timestart, timeend);
+    if (newItem) {
+      setNewItem(false);
+      // dispatch(createResv());
+      // void createResv(currentDay, room, activity, timestart, timeend);
+    }
   };
 
   const handleReset = (i: number | undefined): void => {
@@ -75,7 +83,7 @@ const MonthList = ({
   };
 
   const handleDelete = (resv: IResv): void => {
-    // void deleteResv(resv);
+    // dispatch(deleteResv());
   };
 
   let renderedItems: React.ReactElement[];

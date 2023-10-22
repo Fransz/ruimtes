@@ -24,9 +24,20 @@ interface IResv {
   room: IRoom;
   id: number;
 }
+interface IResvStored {
+  activity: string;
+  date: string;
+  timestart: string;
+  timeend: string;
+  roomId: number;
+  id: number;
+}
+interface IResvFetched extends IResvStored {
+  room: IRoom;
+}
 
 interface IResvsState {
-  resvs: any[];
+  resvs: IResvFetched[];
   status: EStatus;
   error: string | null;
 }
@@ -44,6 +55,44 @@ export const fetchResvs = createAsyncThunk("resvs/fetch", async () => {
   return resvs;
 });
 
+interface IUpdateData {
+  id: number;
+  room: IRoom;
+  activity: string;
+  timestart: string;
+  timeend: string;
+}
+export const updateResv = createAsyncThunk<
+  IResvFetched[],
+  IUpdateData,
+  { state: RootState }
+>("resvs/update", async (data, { getState }) => {
+  const { id, room, activity, timestart, timeend } = data;
+  const resvs = getState().resvs.resvs.filter((r) => r.id !== id);
+  const old = getState().resvs.resvs.find((r) => r.id === id);
+  const nw = { ...old, roomId: room.id, activity, timestart, timeend };
+
+  const { data: stored } = await axios.put(
+    `http://localhost:3001/resvs/${id}`,
+    nw
+  );
+  return [...resvs, { ...stored, room }] as IResvFetched[];
+});
+
+export const createResv = createAsyncThunk(
+  "resvs/create",
+  (data: { r: IRoom; a: string; s: string; e: string }) => {
+    console.log("slice create resv");
+  }
+);
+
+export const deleteResv = createAsyncThunk(
+  "resvs/delete",
+  (id: number): void => {
+    console.log("slice delete resv");
+  }
+);
+
 const resvsSlice = createSlice({
   name: "resvs",
   initialState,
@@ -59,6 +108,43 @@ const resvsSlice = createSlice({
       })
       .addCase(fetchResvs.rejected, (state, _) => {
         state.status = EStatus.FAILED;
+        state.error = "Network error.";
+      })
+
+      .addCase(updateResv.pending, (state, _) => {
+        state.status = EStatus.LOADING;
+      })
+      .addCase(updateResv.fulfilled, (state, action) => {
+        state.status = EStatus.SUCCEEDED;
+        state.resvs = action.payload;
+      })
+      .addCase(updateResv.rejected, (state, _) => {
+        state.status = EStatus.FAILED;
+        state.error = "Network error.";
+      })
+
+      .addCase(createResv.pending, (state, _) => {
+        state.status = EStatus.LOADING;
+      })
+      .addCase(createResv.fulfilled, (state, action) => {
+        state.status = EStatus.SUCCEEDED;
+        // Update resvs
+      })
+      .addCase(createResv.rejected, (state, _) => {
+        state.status = EStatus.FAILED;
+        state.error = "Network error.";
+      })
+
+      .addCase(deleteResv.pending, (state, _) => {
+        state.status = EStatus.LOADING;
+      })
+      .addCase(deleteResv.fulfilled, (state, action) => {
+        state.status = EStatus.SUCCEEDED;
+        // Update resvs
+      })
+      .addCase(deleteResv.rejected, (state, _) => {
+        state.status = EStatus.FAILED;
+        state.error = "Network error.";
       });
   },
 });
