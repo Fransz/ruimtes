@@ -72,6 +72,7 @@ const Month = () => {
         </div>
         {showList && (
           <MonthList
+            key={currentDay.valueOf()}
             className='w-[20%]'
             filterRooms={filterRooms}
             handleCloseList={handleCloseList}
