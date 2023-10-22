@@ -11,6 +11,8 @@ import type { IResv } from "../../store/resv";
 import { useAppSelector } from "../../hooks/use-store";
 
 import { resvsByDateSelector } from "../../store/resv";
+import MonthListItemNew from "./MonthListItemNew";
+import MonthListItemEdit from "./MonthListItemEdit";
 
 interface IMonthList {
   filterRooms: IRoom[];
@@ -37,7 +39,7 @@ const MonthList = ({
     resvsByDateSelector(state, currentDay)
   );
 
-  const handleNewItem = (): void => setNewItem(!newItem);
+  const handleNewItem = (): void => setNewItem(true);
   const handleEditItem = (i: number): void => {
     setEditIdx(i);
   };
@@ -61,14 +63,15 @@ const MonthList = ({
     timestart: string,
     timeend: string
   ): void => {
-    setNewItem(!newItem);
+    setNewItem(false);
     void createResv(currentDay, room, activity, timestart, timeend);
   };
 
-  const handleReset = (i: number): void => {
+  const handleReset = (i: number | undefined): void => {
     if (i === editIdx) {
       setEditIdx(undefined);
     }
+    setNewItem(false);
   };
 
   const handleDelete = (resv: IResv): void => {
@@ -78,39 +81,39 @@ const MonthList = ({
   let renderedItems: React.ReactElement[];
   if (newItem) {
     renderedItems = [
-      <MonthListItem
-        resv={undefined}
+      <MonthListItemNew
         key='newitem'
-        handleEdit={handleEditItem}
-        handleSave={handleSave}
         handleReset={handleReset}
-        handleDelete={handleDelete}
         handleCreate={handleCreate}
-        isEdit={false}
-        isNew={true}
       />,
     ];
   } else {
     renderedItems = resvs
       .filter(
         (resv: IResv) =>
-          currentDay.isSame(resv.startTime, "day") &&
-          (filterRooms.length === 0 ||
-            filterRooms.some((r) => r.id === resv.room.id))
+          filterRooms.length === 0 ||
+          filterRooms.some((r) => r.id === resv.room.id)
       )
-      .map((resv: IResv) => (
-        <MonthListItem
-          resv={resv}
-          key={resv.id}
-          handleEdit={handleEditItem}
-          handleSave={handleSave}
-          handleReset={handleReset}
-          handleDelete={handleDelete}
-          handleCreate={handleCreate}
-          isEdit={editIdx === resv.id}
-          isNew={false}
-        />
-      ));
+      .map((resv: IResv) => {
+        if (editIdx === resv.id)
+          return (
+            <MonthListItemEdit
+              resv={resv}
+              key={resv.id}
+              handleSave={handleSave}
+              handleReset={handleReset}
+            />
+          );
+        else
+          return (
+            <MonthListItem
+              resv={resv}
+              key={resv.id}
+              handleEdit={handleEditItem}
+              handleDelete={handleDelete}
+            />
+          );
+      });
   }
 
   return (
