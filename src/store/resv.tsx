@@ -91,10 +91,12 @@ export const createResv = createAsyncThunk<IResvRead, TCreateData, {}>(
   }
 );
 
-export const deleteResv = createAsyncThunk(
+export const deleteResv = createAsyncThunk<number, number, {}>(
   "resvs/delete",
-  (id: number): void => {
-    console.log("slice delete resv");
+  (id) => {
+    return axios.delete(`http://localhost:3001/resvs/${id}`).then(() => {
+      return id;
+    });
   }
 );
 
@@ -148,7 +150,8 @@ const resvsSlice = createSlice({
       })
       .addCase(deleteResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        // Update resvs
+        const id = action.payload;
+        state.resvs = state.resvs.filter((resv) => resv.id !== id);
       })
       .addCase(deleteResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;

@@ -64,7 +64,7 @@ const MonthList = ({
   };
 
   const handleDelete = (resv: IResv): void => {
-    // dispatch(deleteResv());
+    dispatch(deleteResv(resv.id));
   };
 
   let renderedItems: React.ReactElement[];
