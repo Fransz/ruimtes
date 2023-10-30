@@ -38,7 +38,7 @@ const App = () => {
   return (
     <>
       {status}
-      <Month />;
+      <Month />
     </>
   );
 };

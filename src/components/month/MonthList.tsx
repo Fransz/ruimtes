@@ -6,7 +6,7 @@ import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
 
 import useDateContext from "../../hooks/use-date-context";
-import type { IResv, TUpdateData } from "../../store/resv";
+import type { IResv, TCreateData, TUpdateData } from "../../store/resv";
 import { updateResv, createResv, deleteResv } from "../../store/resv";
 import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 
@@ -48,16 +48,11 @@ const MonthList = ({
     }
   };
 
-  const handleCreate = (
-    room: IRoom,
-    activity: TActivity,
-    timestart: string,
-    timeend: string
-  ): void => {
+  const handleCreate = (data: Omit<TCreateData, "date">): void => {
     if (newItem) {
       setNewItem(false);
-      // dispatch(createResv());
-      // void createResv(currentDay, room, activity, timestart, timeend);
+      const date = currentDay.format("YYYY-MM-DD");
+      dispatch(createResv({ ...data, date }));
     }
   };
 

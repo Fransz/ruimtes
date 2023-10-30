@@ -39,6 +39,7 @@ interface IResvRead extends IResvWrite {
   room: IRoom;
 }
 type TUpdateData = Omit<IResvWrite, "date" | "roomId"> & { room: IRoom };
+type TCreateData = Omit<IResvWrite, "id" | "roomId"> & { room: IRoom };
 
 interface IResvsState {
   resvs: IResvRead[];
@@ -76,10 +77,17 @@ export const updateResv = createAsyncThunk<
     });
 });
 
-export const createResv = createAsyncThunk(
+export const createResv = createAsyncThunk<IResvRead, TCreateData, {}>(
   "resvs/create",
-  (data: { r: IRoom; a: string; s: string; e: string }) => {
-    console.log("slice create resv");
+  (data) => {
+    const { room, date, activity, startTime, endTime } = data;
+    const resv = { date, activity, startTime, endTime, roomId: room.id };
+
+    return axios
+      .post(`http://localhost:3001/resvs/`, resv)
+      .then(({ data: stored }) => {
+        return { ...stored, room };
+      });
   }
 );
 
@@ -128,7 +136,7 @@ const resvsSlice = createSlice({
       })
       .addCase(createResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        // Update resvs
+        state.resvs = [...state.resvs, action.payload];
       })
       .addCase(createResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;
@@ -190,4 +198,5 @@ export {
   type IResvsState,
   type IResvWrite,
   type TUpdateData,
+  type TCreateData,
 };

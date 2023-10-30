@@ -2,19 +2,14 @@ import React, { useState } from "react";
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
 import Button from "../widgets/Button";
-import { TActivity } from "../../context/Resv";
 import { IRoom } from "../../context/Room";
 import RoomDropDown from "../widgets/RoomDropDown";
 
 import useRoomContext from "../../hooks/use-room-context";
+import { TCreateData } from "../../store/resv";
 
 interface IMonthListItemNew {
-  handleCreate: (
-    room: IRoom,
-    activity: TActivity,
-    timestart: string,
-    timeend: string
-  ) => void;
+  handleCreate: (data: Omit<TCreateData, "date">) => void;
   handleReset: (i: number | undefined) => void;
 }
 
@@ -36,7 +31,7 @@ const MonthListItemNew = ({ handleCreate, handleReset }: IMonthListItemNew) => {
   const handleRoom = (r: IRoom) => setRoom(r);
 
   const handleItemSave = () => {
-    handleCreate(room, activity, startTime, endTime);
+    handleCreate({ room, activity, startTime, endTime });
   };
 
   return (
