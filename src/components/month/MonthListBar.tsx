@@ -12,7 +12,6 @@ import nl from "date-fns/locale/nl";
 import useDateContext from "../../hooks/use-date-context";
 
 interface IListBar {
-  handleCloseList: () => void;
   isNew: boolean;
   handleNewItem: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
@@ -23,7 +22,6 @@ type TListBar = React.PropsWithChildren<IListBar>;
 registerLocale("nl", nl); // locale for day-fns
 
 const ListBar = ({
-  handleCloseList,
   isNew,
   handleNewItem,
   handleFilterList,
@@ -80,7 +78,6 @@ const ListBar = ({
           locale='nl'
           customInput={<DatePickerButton />}
         />
-        <Button onClick={handleCloseList}>sluit</Button>
       </div>
       <h1 className='text-center text-xl'>{`${currentDay.format(
         "D MMMM YYYY"

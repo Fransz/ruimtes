@@ -16,14 +16,12 @@ import MonthListItemEdit from "./MonthListItemEdit";
 
 interface IMonthList {
   filterRooms: IRoom[];
-  handleClose: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
   className?: string;
 }
 
 const MonthList = ({
   filterRooms,
-  handleClose,
   handleFilterList,
   className,
 }: IMonthList) => {
@@ -114,7 +112,6 @@ const MonthList = ({
   return (
     <div className={className}>
       <MonthListBar
-        handleCloseList={handleClose}
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
         filterRooms={filterRooms}

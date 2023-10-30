@@ -9,25 +9,20 @@ import useDateContext from "../../hooks/use-date-context";
 import dayjs, { Dayjs } from "dayjs";
 
 const Month = () => {
-  const [showList, setShowList] = useState<boolean>(false);
   const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
 
   const { currentDay, setCurrentDay } = useDateContext();
 
   const dayClickHandler = (d: Dayjs): void => {
-    setShowList(true);
     setFilterRooms([]);
     setCurrentDay(d);
   };
 
   const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
     e.stopPropagation();
-    setShowList(true);
     setFilterRooms([r]);
     setCurrentDay(d);
   };
-
-  const handleCloseList = (): void => setShowList(!showList);
 
   const handleFilterList = (room: IRoom | undefined): void => {
     if (room === undefined) {
@@ -70,15 +65,14 @@ const Month = () => {
           {befores}
           {days}
         </div>
-        {showList && (
+        {
           <MonthList
             key={currentDay.valueOf()}
             className='w-[20%]'
             filterRooms={filterRooms}
-            handleClose={handleCloseList}
             handleFilterList={handleFilterList}
           />
-        )}
+        }
       </div>
     </>
   );
