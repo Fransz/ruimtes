@@ -60,20 +60,20 @@ export const fetchResvs = createAsyncThunk("resvs/fetch", async () => {
 });
 
 export const updateResv = createAsyncThunk<
-  IResvRead[],
+  IResvRead,
   TUpdateData,
   { state: RootState }
->("resvs/update", async (data, { getState }) => {
+>("resvs/update", (data, { getState }) => {
+  const old = getState().resvs.resvs.find((r) => r.id === data.id);
+
   const { id, room, activity, startTime, endTime } = data;
-  const resvs = getState().resvs.resvs.filter((r) => r.id !== id);
-  const old = getState().resvs.resvs.find((r) => r.id === id);
   const nw = { ...old, roomId: room.id, activity, startTime, endTime };
 
-  const { data: stored } = await axios.put(
-    `http://localhost:3001/resvs/${id}`,
-    nw
-  );
-  return [...resvs, { ...stored, room }];
+  return axios
+    .put(`http://localhost:3001/resvs/${id}`, nw)
+    .then(({ data: stored }) => {
+      return { ...stored, room };
+    });
 });
 
 export const createResv = createAsyncThunk(
@@ -113,7 +113,10 @@ const resvsSlice = createSlice({
       })
       .addCase(updateResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        state.resvs = action.payload;
+
+        const id = action.payload.id;
+        const resvs = state.resvs.filter((r) => r.id !== id);
+        state.resvs = [...resvs, action.payload];
       })
       .addCase(updateResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;

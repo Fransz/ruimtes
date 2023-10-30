@@ -44,6 +44,7 @@ const MonthList = ({
     const { id } = data;
     if (id === editIdx) {
       dispatch(updateResv(data));
+      setEditIdx(undefined);
     }
   };
 

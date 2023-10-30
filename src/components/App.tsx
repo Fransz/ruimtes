@@ -21,16 +21,26 @@ const App = () => {
     if (fetchStatus === EStatus.IDLE) dispatch(fetchResvs());
   }, [dispatch, fetchStatus]);
 
+  let status;
   switch (fetchStatus) {
     case EStatus.FAILED:
-      return <div>Error!</div>;
+      status = <div>Error!</div>;
+      break;
     case EStatus.SUCCEEDED:
-      return <Month />;
+      status = null;
+      break;
     case EStatus.LOADING:
-      return <div>Loading....</div>;
+      status = <div>Loading....</div>;
+      break;
     default:
-      return <div>Dunno!</div>;
+      status = <div>Dunno!</div>;
   }
+  return (
+    <>
+      {status}
+      <Month />;
+    </>
+  );
 };
 
 export default App;
