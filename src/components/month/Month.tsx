@@ -75,7 +75,7 @@ const Month = () => {
             key={currentDay.valueOf()}
             className='w-[20%]'
             filterRooms={filterRooms}
-            handleCloseList={handleCloseList}
+            handleClose={handleCloseList}
             handleFilterList={handleFilterList}
           />
         )}

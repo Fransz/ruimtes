@@ -8,7 +8,10 @@ import { type IRoom } from "../context/Room";
 import { RootState } from "./store";
 
 import dayjs, { type Dayjs } from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
+
+dayjs.extend(customParseFormat);
 
 enum EStatus {
   IDLE = "idle",
@@ -18,28 +21,27 @@ enum EStatus {
 }
 
 interface IResv {
-  startTime: Dayjs;
-  endTime: Dayjs;
   activity: string;
-  room: IRoom;
+  endTime: Dayjs;
   id: number;
+  room: IRoom;
+  startTime: Dayjs;
 }
-interface IResvStore {
+interface IResvWrite {
   activity: string;
   date: string;
-  timestart: string;
-  timeend: string;
-  roomId: number;
+  endTime: string;
   id: number;
+  roomId: number;
+  startTime: string;
 }
-interface IResvFetch extends IResvStore {
+interface IResvRead extends IResvWrite {
   room: IRoom;
 }
-
-type IUpdateData = Omit<IResvStore, "date" | "roomId"> & { room: IRoom };
+type TUpdateData = Omit<IResvWrite, "date" | "roomId"> & { room: IRoom };
 
 interface IResvsState {
-  resvs: IResvFetch[];
+  resvs: IResvRead[];
   status: EStatus;
   error: string | null;
 }
@@ -58,20 +60,20 @@ export const fetchResvs = createAsyncThunk("resvs/fetch", async () => {
 });
 
 export const updateResv = createAsyncThunk<
-  IResvFetch[],
-  IUpdateData,
+  IResvRead[],
+  TUpdateData,
   { state: RootState }
 >("resvs/update", async (data, { getState }) => {
-  const { id, room, activity, timestart, timeend } = data;
+  const { id, room, activity, startTime, endTime } = data;
   const resvs = getState().resvs.resvs.filter((r) => r.id !== id);
   const old = getState().resvs.resvs.find((r) => r.id === id);
-  const nw = { ...old, roomId: room.id, activity, timestart, timeend };
+  const nw = { ...old, roomId: room.id, activity, startTime, endTime };
 
   const { data: stored } = await axios.put(
     `http://localhost:3001/resvs/${id}`,
     nw
   );
-  return [...resvs, { ...stored, room }] as IResvFetch[];
+  return [...resvs, { ...stored, room }];
 });
 
 export const createResv = createAsyncThunk(
@@ -155,11 +157,11 @@ export const resvsSelector = createSelector(
   (rs) => {
     return rs.map((r): IResv => {
       const startTime = dayjs(
-        `${r.date} ${r.timestart}`,
+        `${r.date} ${r.startTime}`,
         "YYYY-MM-DD HH:mm"
       ).locale("nl");
       const endTime = dayjs(
-        `${r.date} ${r.timeend}`,
+        `${r.date} ${r.endTime}`,
         "YYYY-MM-DD HH:mm"
       ).locale("nl");
       return {
@@ -179,4 +181,10 @@ export const resvsByDateSelector = createSelector(
 );
 
 export const statusSelector = (state: RootState) => state.resvs.status;
-export { EStatus, type IResv, type IResvsState };
+export {
+  EStatus,
+  type IResv,
+  type IResvsState,
+  type IResvWrite,
+  type TUpdateData,
+};

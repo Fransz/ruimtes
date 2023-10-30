@@ -6,7 +6,7 @@ import { IRoom } from "../../context/Room";
 import { TActivity } from "../../context/Resv";
 
 import useDateContext from "../../hooks/use-date-context";
-import type { IResv } from "../../store/resv";
+import type { IResv, TUpdateData } from "../../store/resv";
 import { updateResv, createResv, deleteResv } from "../../store/resv";
 import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 
@@ -16,14 +16,14 @@ import MonthListItemEdit from "./MonthListItemEdit";
 
 interface IMonthList {
   filterRooms: IRoom[];
-  handleCloseList: () => void;
+  handleClose: () => void;
   handleFilterList: (r: IRoom | undefined) => void;
   className?: string;
 }
 
 const MonthList = ({
   filterRooms,
-  handleCloseList,
+  handleClose,
   handleFilterList,
   className,
 }: IMonthList) => {
@@ -42,22 +42,9 @@ const MonthList = ({
     setEditIdx(i);
   };
 
-  const handleSave = (
-    id: number,
-    room: IRoom,
-    activity: string,
-    startTime: string,
-    endTime: string
-  ): void => {
-    const data = {
-      id,
-      room,
-      activity,
-      timestart: startTime,
-      timeend: endTime,
-    };
+  const handleSave = (data: TUpdateData): void => {
+    const { id } = data;
     if (id === editIdx) {
-      setEditIdx(undefined);
       dispatch(updateResv(data));
     }
   };
@@ -127,7 +114,7 @@ const MonthList = ({
   return (
     <div className={className}>
       <MonthListBar
-        handleCloseList={handleCloseList}
+        handleCloseList={handleClose}
         handleFilterList={handleFilterList}
         handleNewItem={handleNewItem}
         filterRooms={filterRooms}

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
-import { IResv } from "../../store/resv";
-import { TActivity } from "../../context/Resv";
+import { IResv, TUpdateData } from "../../store/resv";
 import { IRoom } from "../../context/Room";
 
 import RoomDropDown from "../widgets/RoomDropDown";
@@ -10,13 +9,7 @@ import Button from "../widgets/Button";
 
 interface IMonthListItemEdit {
   resv: IResv;
-  handleSave: (
-    id: number,
-    room: IRoom,
-    activity: TActivity,
-    timestart: string,
-    timeend: string
-  ) => void;
+  handleSave: (data: TUpdateData) => void;
   handleReset: (i: number) => void;
 }
 
@@ -39,7 +32,7 @@ const MonthListItemEdit = ({
   const handleRoom = (r: IRoom) => setRoom(r);
 
   const handleItemSave = () =>
-    handleSave(resv.id, room, activity, startTime, endTime);
+    handleSave({ id: resv.id, room, activity, startTime, endTime });
 
   const handleItemReset = () => handleReset(resv.id);
 
