@@ -40,14 +40,6 @@ const MonthList = ({
     setEditIdx(i);
   };
 
-  const handleCreate = (data: Omit<TCreateData, "date">): void => {
-    if (newItem) {
-      setNewItem(false);
-      const date = currentDay.format("YYYY-MM-DD");
-      dispatch(createResv({ ...data, date }));
-    }
-  };
-
   const handleReset = (i: number | undefined): void => {
     if (i === editIdx) {
       setEditIdx(undefined);
@@ -62,11 +54,7 @@ const MonthList = ({
   let renderedItems: React.ReactElement[];
   if (newItem) {
     renderedItems = [
-      <MonthListItemNew
-        key='newitem'
-        handleReset={handleReset}
-        handleCreate={handleCreate}
-      />,
+      <MonthListItemNew key='newitem' handleReset={handleReset} />,
     ];
   } else {
     renderedItems = resvs

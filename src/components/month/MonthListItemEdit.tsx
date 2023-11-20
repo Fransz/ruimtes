@@ -61,14 +61,14 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
       return "Missende data.";
     }
     if (end <= start) return "Eindtijd voor begintijd.";
-    const overlap = resvs.some((r: IResv) => {
-      return (
+    const overlap = resvs.some(
+      (r: IResv) =>
         r.id !== id &&
+        r.room.id === room.id &&
         r.startTime.isSame(start, "day") &&
         end > r.startTime &&
         start < r.endTime
-      );
-    });
+    );
     if (overlap) return "Overlappende activiteiten";
     return "";
   };

@@ -69,14 +69,13 @@ export const fetchResvs = rootCreateAsyncThunk<IResvRead[], void>(
 
 export const updateResv = rootCreateAsyncThunk<IResvRead, TUpdateData>(
   "resvs/update",
-  (data, { getState }) => {
+  (data) => {
     const { id, room, activity, date, startTime, endTime } = data;
-    const nw = { id, activity, date, startTime, endTime, roomId: room.id };
+    const resv = { id, activity, date, startTime, endTime, roomId: room.id };
 
     return axios
-      .put(`http://localhost:3001/resvs/${id}`, nw)
+      .put(`http://localhost:3001/resvs/${id}`, resv)
       .then(({ data: stored }) => {
-        console.log(stored);
         return { ...stored, room };
       });
   }
