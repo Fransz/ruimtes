@@ -100,5 +100,5 @@ const Provider = ({ children }: { children: React.ReactNode }) => {
   return <ResvCtx.Provider value={ctx}>{children}</ResvCtx.Provider>;
 };
 
-export { Provider, type IResv, type IResvCtx, type TActivity };
+export { Provider, type IResvCtx, type TActivity };
 export default ResvCtx;
