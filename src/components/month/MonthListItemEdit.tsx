@@ -88,8 +88,10 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
       } finally {
         setUpdateReqStatus("idle");
       }
-    } else {
+    } else if (Boolean(error)) {
       setUpdateError(error);
+    } else {
+      setUpdateError("busy");
     }
   };
 
