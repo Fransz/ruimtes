@@ -11,6 +11,10 @@ import dayjs, { type Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
 
+const rootCreateAsyncThunk = createAsyncThunk.withTypes<{
+  state: RootState;
+}>();
+
 dayjs.extend(customParseFormat);
 
 enum EStatus {
@@ -38,7 +42,7 @@ interface IResvWrite {
 interface IResvRead extends IResvWrite {
   room: IRoom;
 }
-type TUpdateData = Omit<IResvWrite, "date" | "roomId"> & { room: IRoom };
+type TUpdateData = Omit<IResvWrite, "roomId"> & { room: IRoom };
 type TCreateData = Omit<IResvWrite, "id" | "roomId"> & { room: IRoom };
 
 interface IResvsState {
@@ -53,45 +57,48 @@ const initialState: IResvsState = {
   error: null,
 };
 
-export const fetchResvs = createAsyncThunk("resvs/fetch", async () => {
-  const { data: resvs } = await axios.get(
-    "http://localhost:3001/resvs?_expand=room"
-  );
-  return resvs;
-});
+export const fetchResvs = rootCreateAsyncThunk<IResvRead[], void>(
+  "resvs/fetch",
+  async () => {
+    const { data: resvs } = await axios.get(
+      "http://localhost:3001/resvs?_expand=room"
+    );
+    return resvs;
+  }
+);
 
-export const updateResv = createAsyncThunk<
-  IResvRead,
-  TUpdateData,
-  { state: RootState }
->("resvs/update", (data, { getState }) => {
-  const old = getState().resvs.resvs.find((r) => r.id === data.id);
+export const updateResv = rootCreateAsyncThunk<IResvRead, TUpdateData>(
+  "resvs/update",
+  (data, { getState }) => {
+    const old = getState().resvs.resvs.find((r) => r.id === data.id);
 
-  const { id, room, activity, startTime, endTime } = data;
-  const nw = { ...old, roomId: room.id, activity, startTime, endTime };
-
-  return axios
-    .put(`http://localhost:3001/resvs/${id}`, nw)
-    .then(({ data: stored }) => {
-      return { ...stored, room };
-    });
-});
-
-export const createResv = createAsyncThunk<IResvRead, TCreateData, {}>(
-  "resvs/create",
-  (data) => {
-    const { room, date, activity, startTime, endTime } = data;
-    const resv = { date, activity, startTime, endTime, roomId: room.id };
+    const { id, room, activity, startTime, endTime } = data;
+    const nw = { ...old, roomId: room.id, activity, startTime, endTime };
 
     return axios
-      .post(`http://localhost:3001/resvs/`, resv)
+      .put(`http://localhost:3001/resvs/${id}`, nw)
       .then(({ data: stored }) => {
         return { ...stored, room };
       });
   }
 );
 
-export const deleteResv = createAsyncThunk<number, number, {}>(
+export const createResv = createAsyncThunk<
+  IResvRead,
+  TCreateData,
+  { state: RootState; a: number }
+>("resvs/create", (data) => {
+  const { room, date, activity, startTime, endTime } = data;
+  const resv = { date, activity, startTime, endTime, roomId: room.id };
+
+  return axios
+    .post(`http://localhost:3001/resvs/`, resv)
+    .then(({ data: stored }) => {
+      return { ...stored, room };
+    });
+});
+
+export const deleteResv = rootCreateAsyncThunk<number, number>(
   "resvs/delete",
   (id) => {
     return axios.delete(`http://localhost:3001/resvs/${id}`).then(() => {

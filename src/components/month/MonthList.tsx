@@ -40,14 +40,6 @@ const MonthList = ({
     setEditIdx(i);
   };
 
-  const handleSave = (data: TUpdateData): void => {
-    const { id } = data;
-    if (id === editIdx) {
-      dispatch(updateResv(data));
-      setEditIdx(undefined);
-    }
-  };
-
   const handleCreate = (data: Omit<TCreateData, "date">): void => {
     if (newItem) {
       setNewItem(false);
@@ -89,7 +81,6 @@ const MonthList = ({
             <MonthListItemEdit
               resv={resv}
               key={resv.id}
-              handleSave={handleSave}
               handleReset={handleReset}
             />
           );

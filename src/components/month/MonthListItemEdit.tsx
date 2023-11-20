@@ -1,38 +1,97 @@
 import React, { useState } from "react";
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
-import { IResv, TUpdateData } from "../../store/resv";
+import {
+  IResv,
+  TUpdateData,
+  resvsSelector,
+  updateResv,
+} from "../../store/resv";
 import { IRoom } from "../../context/Room";
 
 import RoomDropDown from "../widgets/RoomDropDown";
 import Button from "../widgets/Button";
+import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
+import dayjs, { Dayjs } from "dayjs";
 
 interface IMonthListItemEdit {
   resv: IResv;
-  handleSave: (data: TUpdateData) => void;
   handleReset: (i: number) => void;
 }
 
-const MonthListItemEdit = ({
-  resv,
-  handleSave,
-  handleReset,
-}: IMonthListItemEdit) => {
+const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
   const [room, setRoom] = useState(resv.room);
   const [activity, setActivity] = useState(resv.activity);
   const [startTime, setStartTime] = useState(resv.startTime.format("HH:mm"));
   const [endTime, setEndTime] = useState(resv.endTime.format("HH:mm"));
+  const [updateReqStatus, setUpdateReqStatus] = useState("idle");
+  const [updateError, setUpdateError] = useState("");
 
-  const handleActivity = (e: React.ChangeEvent) =>
+  const dispatch = useAppDispatch();
+  const resvs = useAppSelector(resvsSelector);
+
+  const handleActivity = (e: React.ChangeEvent) => {
     setActivity((e.target as HTMLInputElement).value);
-  const handleTimestart = (e: React.ChangeEvent) =>
+    setUpdateError("");
+  };
+  const handleTimestart = (e: React.ChangeEvent) => {
     setStartTime((e.target as HTMLInputElement).value);
-  const handleTimeend = (e: React.ChangeEvent) =>
+    setUpdateError("");
+  };
+  const handleTimeend = (e: React.ChangeEvent) => {
     setEndTime((e.target as HTMLInputElement).value);
-  const handleRoom = (r: IRoom) => setRoom(r);
+    setUpdateError("");
+  };
+  const handleRoom = (r: IRoom) => {
+    setRoom(r);
+    setUpdateError("");
+  };
 
-  const handleItemSave = () =>
-    handleSave({ id: resv.id, room, activity, startTime, endTime });
+  const canUpdate = (data: TUpdateData): string => {
+    const { id, room, activity, date, startTime, endTime } = data;
+    const start: Dayjs = dayjs(
+      `${date} ${startTime}`,
+      "YYYY-MM-DD HH:mm"
+    ).locale("nl");
+    const end: Dayjs = dayjs(`${date} ${endTime}`, "YYYY-MM-DD HH:mm").locale(
+      "nl"
+    );
+
+    if (![id, room, activity, date, startTime, endTime].every(Boolean)) {
+      return "Missende data.";
+    }
+    if (end <= start) return "Eindtijd voor begintijd.";
+    const overlap = resvs.some((r: IResv) => {
+      return (
+        r.id !== id &&
+        r.startTime.isSame(start, "day") &&
+        end > r.startTime &&
+        start < r.endTime
+      );
+    });
+    if (overlap) return "Overlappende activiteiten";
+    return "";
+  };
+  const handleItemSave = () => {
+    const date = resv.startTime.format("YYYY-MM-DD");
+
+    const data = { id: resv.id, date, room, activity, startTime, endTime };
+    const error = canUpdate(data);
+
+    if (!Boolean(error) && updateReqStatus === "idle") {
+      try {
+        setUpdateReqStatus("pending");
+        dispatch(updateResv(data));
+        handleReset(resv.id);
+      } catch {
+        setUpdateError("Kan niet updaten: server error");
+      } finally {
+        setUpdateReqStatus("idle");
+      }
+    } else {
+      setUpdateError(error);
+    }
+  };
 
   const handleItemReset = () => handleReset(resv.id);
 
@@ -79,6 +138,8 @@ const MonthListItemEdit = ({
           />
         </div>
       </div>
+
+      <div className='text-red'>{updateError}</div>
     </li>
   );
 };
