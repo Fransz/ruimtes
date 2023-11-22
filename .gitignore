@@ -5,6 +5,7 @@ test_db.json
 
 .DS_STORE
 node_modules
+*.code-workspace
 scripts/flow/*/.flowconfig
 .flowconfig
 *~
