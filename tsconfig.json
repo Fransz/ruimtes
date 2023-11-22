@@ -8,7 +8,7 @@
     "isolatedModules": true,                          
     "jsx": "react-jsx",                                
     "lib": ["DOM", "ESNEXT"],                                        
-    "module": "esnext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",                     
     "noEmit": true,
     "resolveJsonModule": true,                        
