@@ -1,5 +1,5 @@
 import RoomMarker from "../widgets/RoomMarker";
-import React from "react";
+import React, { memo } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import useRoomContext from "../../hooks/use-room-context";
 import { IRoom } from "../../context/Room";
@@ -12,11 +12,11 @@ interface IMonthDay {
   handleRoomClick: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void;
 }
 
-const MonthDay = ({ day, handleDayClick, handleRoomClick }: IMonthDay) => {
+const MonthDay = memo(({ day, handleDayClick, handleRoomClick }: IMonthDay) => {
   const { rooms } = useRoomContext();
+  const dayResvs = useAppSelector((state) => selectResvsByDate(state, day));
 
   const monthDay = dayjs(day)
-  const dayResvs = useAppSelector((state) => selectResvsByDate(state, monthDay));
 
   const renderedRooms = rooms
     .filter((r) => dayResvs.some((resv: IResv) => resv.room.id === r.id))
@@ -45,7 +45,7 @@ const MonthDay = ({ day, handleDayClick, handleRoomClick }: IMonthDay) => {
       </div>
     </div>
   );
-};
+});
 
 const NoDay = () => {
   return <div className='w-[14%] border border-blue'>&nbsp;</div>;

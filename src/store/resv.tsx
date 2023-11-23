@@ -198,8 +198,8 @@ export const selectResvs = createSelector(selectAll, (rs) => {
 });
 
 export const selectResvsByDate = createSelector(
-  [selectResvs, (_, day: Dayjs): Dayjs => day],
-  (resvs, day) => resvs.filter((r) => day.isSame(r.startTime, "day"))
+  [selectResvs, (_, day: number): number => day],
+  (resvs, day) => resvs.filter((r) => dayjs(day).isSame(r.startTime, "day"))
 );
 
 export const statusSelector = (state: TRootState) => state.resvs.status;

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React  from "react";
 
 import MonthDay, { NoDay } from "./MonthDay";
 import { IRoom } from "../../context/Room";

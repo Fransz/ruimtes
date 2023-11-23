@@ -29,7 +29,7 @@ const MonthList = ({
   const { currentDay } = useDateContext();
   const dispatch = useAppDispatch();
 
-  const resvs = useAppSelector((state) => selectResvsByDate(state, currentDay));
+  const resvs = useAppSelector((state) => selectResvsByDate(state, currentDay.valueOf()));
 
   const handleNewItem = (): void => setNewItem(true);
   const handleEditItem = (i: number): void => {
