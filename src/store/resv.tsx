@@ -195,7 +195,7 @@ export const resvsSelector = createSelector(
 );
 
 export const resvsByDateSelector = createSelector(
-  [resvsSelector, (_, day) => day],
+  [resvsSelector, (_, day: Dayjs): Dayjs => day],
   (resvs, day) => resvs.filter((r) => day.isSame(r.startTime, "day"))
 );
 

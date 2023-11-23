@@ -7,6 +7,7 @@ import useRoomContext from "../hooks/use-room-context";
 import Month from "./month/Month";
 
 import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
+import MonthWrapper from "./month/MonthWrapper";
 
 const App = () => {
   const { fetchRooms } = useRoomContext();
@@ -38,7 +39,7 @@ const App = () => {
   return (
     <>
       {status}
-      <Month />
+      <MonthWrapper />
     </>
   );
 };
