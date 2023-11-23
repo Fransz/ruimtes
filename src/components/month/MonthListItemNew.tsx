@@ -10,7 +10,7 @@ import {
   IResv,
   TCreateData,
   createResv,
-  resvsSelector,
+  selectResvs,
 } from "../../store/resv";
 import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 import dayjs, { Dayjs } from "dayjs";
@@ -33,7 +33,7 @@ const MonthListItemNew = ({ handleReset }: IMonthListItemNew) => {
   const [createError, setCreateError] = useState("");
 
   const dispatch = useAppDispatch();
-  const resvs = useAppSelector(resvsSelector);
+  const resvs = useAppSelector(selectResvs);
 
   const handleTimestart = (e: React.ChangeEvent) => {
     setStartTime((e.target as HTMLInputElement).value);

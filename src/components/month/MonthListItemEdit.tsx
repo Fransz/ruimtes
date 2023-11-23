@@ -4,7 +4,7 @@ import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 import {
   IResv,
   TUpdateData,
-  resvsSelector,
+  selectResvs,
   updateResv,
 } from "../../store/resv";
 import { IRoom } from "../../context/Room";
@@ -28,7 +28,7 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
   const [updateError, setUpdateError] = useState("");
 
   const dispatch = useAppDispatch();
-  const resvs = useAppSelector(resvsSelector);
+  const resvs = useAppSelector(selectResvs);
 
   const handleActivity = (e: React.ChangeEvent) => {
     setActivity((e.target as HTMLInputElement).value);
@@ -147,3 +147,4 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
 };
 
 export default MonthListItemEdit;
+

@@ -8,5 +8,5 @@ const store = configureStore({
 });
 
 export { store };
-export type RootState = ReturnType<typeof store.getState>;
-export type RootDispatch = typeof store.dispatch;
+export type TRootState = ReturnType<typeof store.getState>;
+export type TRootDispatch = typeof store.dispatch;

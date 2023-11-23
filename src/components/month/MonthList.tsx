@@ -3,14 +3,12 @@ import React, { useState } from "react";
 import MonthListBar from "./MonthListBar";
 import MonthListItem from "./MonthListItem";
 import { IRoom } from "../../context/Room";
-import { TActivity } from "../../context/Resv";
 
 import useDateContext from "../../hooks/use-date-context";
-import type { IResv, TCreateData, TUpdateData } from "../../store/resv";
-import { updateResv, createResv, deleteResv } from "../../store/resv";
+import type { IResv } from "../../store/resv";
+import { deleteResv, selectResvsByDate } from "../../store/resv";
 import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 
-import { resvsByDateSelector } from "../../store/resv";
 import MonthListItemNew from "./MonthListItemNew";
 import MonthListItemEdit from "./MonthListItemEdit";
 
@@ -31,9 +29,7 @@ const MonthList = ({
   const { currentDay } = useDateContext();
   const dispatch = useAppDispatch();
 
-  const resvs = useAppSelector((state) =>
-    resvsByDateSelector(state, currentDay)
-  );
+  const resvs = useAppSelector((state) => selectResvsByDate(state, currentDay));
 
   const handleNewItem = (): void => setNewItem(true);
   const handleEditItem = (i: number): void => {
