@@ -1,10 +1,7 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 
-import MonthList from "./MonthList";
 import MonthDay, { NoDay } from "./MonthDay";
 import { IRoom } from "../../context/Room";
-
-import useDateContext from "../../hooks/use-date-context";
 
 import dayjs, { Dayjs } from "dayjs";
 
@@ -15,7 +12,7 @@ type TMonth = {
   handleRoomClick: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void;
 };
 
-const Month = memo(({ month, year, handleDayClick, handleRoomClick }: TMonth) => {
+const Month = ({ month, year, handleDayClick, handleRoomClick }: TMonth) => {
   const first: Dayjs = dayjs(new Date(year, month, 1));
   const last: Dayjs = dayjs(first).endOf("month");
 
@@ -26,9 +23,9 @@ const Month = memo(({ month, year, handleDayClick, handleRoomClick }: TMonth) =>
 
   let days: React.ReactElement[] = Array.from(new Array(last.date()), (_, i) =>
     dayjs(first).date(i + 1).valueOf()
-  ).map((d, i) => (
+  ).map((d) => (
     <MonthDay
-      key={i}
+      key={d}
       day={d}
       handleRoomClick={handleRoomClick}
       handleDayClick={handleDayClick}
@@ -43,5 +40,5 @@ const Month = memo(({ month, year, handleDayClick, handleRoomClick }: TMonth) =>
       </div>
     </>
   );
-});
+};
 export default Month;
