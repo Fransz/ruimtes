@@ -2,24 +2,22 @@ import { useEffect } from "react";
 
 import { EStatus, fetchResvs, statusSelector } from "../store/resv";
 import { useAppDispatch, useAppSelector } from "../hooks/use-store";
-import useRoomContext from "../hooks/use-room-context";
-
-import Month from "./month/Month";
 
 import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
+import Month from "./month/Month";
+import { fetchRooms } from "../store/room";
 
 const App = () => {
-  const { fetchRooms } = useRoomContext();
   const fetchStatus = useAppSelector(statusSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    void fetchRooms();
-  }, [fetchRooms]);
+    dispatch(fetchRooms());
+  }, []);
 
   useEffect(() => {
     if (fetchStatus === EStatus.IDLE) dispatch(fetchResvs());
-  }, [dispatch, fetchStatus]);
+  }, []);
 
   let status;
   switch (fetchStatus) {

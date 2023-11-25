@@ -5,8 +5,6 @@ import "./index.css";
 
 import App from "./components/App";
 import { Provider as DateProvider } from "./context/Date";
-import { Provider as ResvProvider } from "./context/Resv";
-import { Provider as RoomProvider } from "./context/Room";
 
 import { Provider as StoreProvider } from "react-redux";
 import { store } from "./store/store";
@@ -16,13 +14,9 @@ const root = createRoot(document.querySelector("#root")!);
 root.render(
   <StrictMode>
     <DateProvider>
-      <RoomProvider>
-        <ResvProvider>
-          <StoreProvider store={store}>
-            <App />
-          </StoreProvider>
-        </ResvProvider>
-      </RoomProvider>
+      <StoreProvider store={store}>
+        <App />
+      </StoreProvider>
     </DateProvider>
   </StrictMode>
 );

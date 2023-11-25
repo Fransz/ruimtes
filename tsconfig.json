@@ -17,6 +17,6 @@
     "target": "es2016"                                  
   },
 
-  "include": ["src/**/*"],
+  "include": ["src/**/*.tsx"],
   "exclude": ["node_modules"]
 }

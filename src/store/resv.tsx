@@ -1,18 +1,20 @@
 import {
+  EntityState,
   createAsyncThunk,
+  createEntityAdapter,
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
 
-import { type IRoom } from "../context/Room";
-import { RootState } from "./store";
+import { type IRoom } from "../store/room";
+import { TRootState } from "./store";
 
 import dayjs, { type Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
 
 const rootCreateAsyncThunk = createAsyncThunk.withTypes<{
-  state: RootState;
+  state: TRootState;
 }>();
 
 dayjs.extend(customParseFormat);
@@ -45,26 +47,28 @@ interface IResvRead extends IResvWrite {
 type TUpdateData = Omit<IResvWrite, "roomId"> & { room: IRoom };
 type TCreateData = Omit<IResvWrite, "id" | "roomId"> & { room: IRoom };
 
-interface IResvsState {
-  resvs: IResvRead[];
+type TResvsState = EntityState<IResvRead> & {
   status: EStatus;
   error: string | null;
-}
+};
 
-const initialState: IResvsState = {
-  resvs: [],
+const resvsAdapter = createEntityAdapter<IResvRead>({
+  sortComparer(r, s) {
+    return r.startTime < s.startTime ? -1 : r.startTime > s.startTime ? 1 : 0;
+  },
+});
+
+const initialState: TResvsState = resvsAdapter.getInitialState({
   status: EStatus.IDLE,
   error: null,
-};
+});
 
 export const fetchResvs = rootCreateAsyncThunk<IResvRead[], void>(
   "resvs/fetch",
-  async () => {
-    const { data: resvs } = await axios.get(
-      "http://localhost:3001/resvs?_expand=room"
-    );
-    return resvs;
-  }
+  () =>
+    axios
+      .get("http://localhost:3001/resvs?_expand=room")
+      .then(({ data: resvs }) => resvs)
 );
 
 export const updateResv = rootCreateAsyncThunk<IResvRead, TUpdateData>(
@@ -81,20 +85,19 @@ export const updateResv = rootCreateAsyncThunk<IResvRead, TUpdateData>(
   }
 );
 
-export const createResv = createAsyncThunk<
-  IResvRead,
-  TCreateData,
-  { state: RootState; a: number }
->("resvs/create", (data) => {
-  const { room, date, activity, startTime, endTime } = data;
-  const resv = { date, activity, startTime, endTime, roomId: room.id };
+export const createResv = createAsyncThunk<IResvRead, TCreateData>(
+  "resvs/create",
+  (data) => {
+    const { room, date, activity, startTime, endTime } = data;
+    const resv = { date, activity, startTime, endTime, roomId: room.id };
 
-  return axios
-    .post(`http://localhost:3001/resvs/`, resv)
-    .then(({ data: stored }) => {
-      return { ...stored, room };
-    });
-});
+    return axios
+      .post(`http://localhost:3001/resvs/`, resv)
+      .then(({ data: stored }) => {
+        return { ...stored, room };
+      });
+  }
+);
 
 export const deleteResv = rootCreateAsyncThunk<number, number>(
   "resvs/delete",
@@ -116,7 +119,7 @@ const resvsSlice = createSlice({
       })
       .addCase(fetchResvs.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        state.resvs = action.payload;
+        resvsAdapter.setAll(state, action.payload);
       })
       .addCase(fetchResvs.rejected, (state, _) => {
         state.status = EStatus.FAILED;
@@ -129,9 +132,7 @@ const resvsSlice = createSlice({
       .addCase(updateResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
 
-        const id = action.payload.id;
-        const resvs = state.resvs.filter((r) => r.id !== id);
-        state.resvs = [...resvs, action.payload];
+        resvsAdapter.upsertOne(state, action.payload);
       })
       .addCase(updateResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;
@@ -143,7 +144,7 @@ const resvsSlice = createSlice({
       })
       .addCase(createResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        state.resvs = [...state.resvs, action.payload];
+        resvsAdapter.addOne(state, action.payload);
       })
       .addCase(createResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;
@@ -155,8 +156,7 @@ const resvsSlice = createSlice({
       })
       .addCase(deleteResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        const id = action.payload;
-        state.resvs = state.resvs.filter((resv) => resv.id !== id);
+        resvsAdapter.removeOne(state, action.payload);
       })
       .addCase(deleteResv.rejected, (state, _) => {
         state.status = EStatus.FAILED;
@@ -167,12 +167,16 @@ const resvsSlice = createSlice({
 
 export const resvsReducer = resvsSlice.reducer;
 
+const { selectAll } = resvsAdapter.getSelectors(
+  (state: TRootState) => state.resvs
+);
+
 /**
  * A selector for all reservations.
  * The selector selects all reservations as IResv;
  */
-export const resvsSelector = createSelector(
-  (state: RootState) => state.resvs.resvs,
+export const selectResvs: (s: TRootState) => IResv[] = createSelector(
+  selectAll,
   (rs) => {
     return rs.map((r): IResv => {
       const startTime = dayjs(
@@ -194,16 +198,18 @@ export const resvsSelector = createSelector(
   }
 );
 
-export const resvsByDateSelector = createSelector(
-  [resvsSelector, (_, day) => day],
-  (resvs, day) => resvs.filter((r) => day.isSame(r.startTime, "day"))
+export const selectResvsByDate = createSelector(
+  [selectResvs, (_, day: number): number =>  day],
+  (resvs, day) => resvs.filter((r) => dayjs(day).isSame(r.startTime, "day"))
+  
 );
 
-export const statusSelector = (state: RootState) => state.resvs.status;
+export const statusSelector = (state: TRootState) => state.resvs.status;
+
 export {
   EStatus,
+  type IResvRead,
   type IResv,
-  type IResvsState,
   type IResvWrite,
   type TUpdateData,
   type TCreateData,

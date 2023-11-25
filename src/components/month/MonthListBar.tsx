@@ -3,31 +3,29 @@ import { RiCloseLine } from "react-icons/ri";
 
 import Button from "../widgets/Button";
 import RoomMarker from "../widgets/RoomMarker";
-import { IRoom } from "../../context/Room";
-import useRoomContext from "../../hooks/use-room-context";
+import { IRoom, selectAllRooms } from "../../store/room";
 import dayjs, { Dayjs } from "dayjs";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import nl from "date-fns/locale/nl";
 import useDateContext from "../../hooks/use-date-context";
+import { useAppSelector } from "../../hooks/use-store";
 
 interface IListBar {
-  isNew: boolean;
   handleNewItem: () => void;
-  handleFilterList: (r: IRoom | undefined) => void;
-  filterRooms: IRoom[];
+  handleClickFilter: (r: IRoom | undefined) => void;
+  filteredRooms: IRoom[];
 }
 type TListBar = React.PropsWithChildren<IListBar>;
 
 registerLocale("nl", nl); // locale for day-fns
 
 const ListBar = ({
-  isNew,
   handleNewItem,
-  handleFilterList,
-  filterRooms,
+  handleClickFilter: handleFilterList,
+  filteredRooms: filterRooms,
 }: TListBar) => {
-  const { rooms } = useRoomContext();
+  const rooms = useAppSelector(selectAllRooms);
   const { currentDay, setCurrentDay } = useDateContext();
 
   const handleDateChange = (d: Dayjs): void => {
@@ -38,7 +36,7 @@ const ListBar = ({
     return (
       <li key={r.id}>
         <RoomMarker
-          filterHandler={(_) => handleFilterList(r)}
+          handleClick={(_) => handleFilterList(r)}
           room={r}
           className={`mx-1 h-4 w-4 ${
             filterRooms.some((fr) => fr.id === r.id)
@@ -70,7 +68,7 @@ const ListBar = ({
   return (
     <>
       <div className='my-3 flex justify-around'>
-        <Button onClick={handleNewItem}>{isNew ? "alle" : "nieuw"}</Button>
+        <Button onClick={handleNewItem}>nieuw</Button>
         <DatePicker
           onChange={(d) => handleDateChange(dayjs(d))}
           className='border border-red bg-black text-white'

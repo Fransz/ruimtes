@@ -1,80 +1,66 @@
-import React, { useState } from "react";
-
-import MonthList from "./MonthList";
-import MonthDay, { NoDay } from "./MonthDay";
-import { IRoom } from "../../context/Room";
-
+import React from "react";
+import { useCallback, useState } from "react";
 import useDateContext from "../../hooks/use-date-context";
 
-import dayjs, { Dayjs } from "dayjs";
+import { IRoom } from "../../store/room";
+import MonthHeader from "./MonthHeader";
+import MonthCalendar from "./MonthCalendar";
+import { Dayjs } from "dayjs";
+import MonthList from "./MonthList";
 
 const Month = () => {
-  const [filterRooms, setFilterRooms] = useState<IRoom[]>([]);
-
+  const [filteredRooms, setFilteredRooms] = useState<IRoom[]>([]);
   const { currentDay, setCurrentDay } = useDateContext();
 
-  const dayClickHandler = (d: Dayjs): void => {
-    setFilterRooms([]);
-    setCurrentDay(d);
-  };
+  const handleDayClick: (d: Dayjs) => void = useCallback(
+    (d) => {
+      setFilteredRooms([]);
+      setCurrentDay(d);
+    },
+    [setCurrentDay, setFilteredRooms]
+  );
 
-  const roomClickHandler = (e: React.MouseEvent, d: Dayjs, r: IRoom): void => {
-    e.stopPropagation();
-    setFilterRooms([r]);
-    setCurrentDay(d);
-  };
+  const handleRoomClick: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void =
+    useCallback(
+      (e, d, r) => {
+        e.stopPropagation();
+        setFilteredRooms([r]);
+        setCurrentDay(d);
+      },
+      [setCurrentDay, setFilteredRooms]
+    );
 
-  const handleFilterList = (room: IRoom | undefined): void => {
+  const handleClickFilter = (room: IRoom | undefined): void => {
     if (room === undefined) {
-      setFilterRooms([]);
-    } else if (filterRooms.some((r) => r.id === room.id)) {
-      setFilterRooms(filterRooms.filter((r) => r.id !== room.id));
+      setFilteredRooms([]);
+    } else if (filteredRooms.some((r) => r.id === room.id)) {
+      setFilteredRooms(filteredRooms.filter((r) => r.id !== room.id));
     } else {
-      setFilterRooms([...filterRooms, room]);
+      setFilteredRooms([...filteredRooms, room]);
     }
   };
 
-  const first: Dayjs = dayjs(currentDay).date(1);
-  const last: Dayjs = dayjs(first).endOf("month");
-
-  // Nr of befores; Days in week before first date.
-  const bf: number = first.day() === 0 ? 6 : first.day() - 1;
-  const befores: React.ReactElement[] = Array.from(new Array(bf), (_, i) => (
-    <NoDay key={i} />
-  ));
-
-  // All days.
-  let days: React.ReactElement[] = Array.from(new Array(last.date()), (_, i) =>
-    dayjs(first).date(i + 1)
-  ).map((d, i) => (
-    <MonthDay
-      key={i}
-      day={d}
-      roomClickHandler={roomClickHandler}
-      dayClickHandler={dayClickHandler}
-    />
-  ));
-
   return (
     <>
-      <div className='py-6 text-center text-6xl'>
-        {currentDay.format("MMMM YYYY")}
-      </div>
+      <MonthHeader
+        month={currentDay.format("MMMM")}
+        year={currentDay.format("YYYY")}
+      />
       <div className='flex'>
-        <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
-          {befores}
-          {days}
-        </div>
-        {
-          <MonthList
-            key={currentDay.valueOf()}
-            className='w-[20%]'
-            filterRooms={filterRooms}
-            handleFilterList={handleFilterList}
-          />
-        }
+        <MonthCalendar
+          month={currentDay.month()}
+          year={currentDay.year()}
+          handleDayClick={handleDayClick}
+          handleRoomClick={handleRoomClick}
+        />
+        <MonthList
+          key={currentDay.valueOf()}
+          filteredRooms={filteredRooms}
+          handleClickFilter={handleClickFilter}
+        />
       </div>
     </>
   );
 };
+
 export default Month;

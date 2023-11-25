@@ -2,26 +2,21 @@ import React, { useState } from "react";
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
 import Button from "../widgets/Button";
-import { IRoom } from "../../context/Room";
+import { IRoom } from "../../store/room";
 import RoomDropDown from "../widgets/RoomDropDown";
 
-import useRoomContext from "../../hooks/use-room-context";
-import {
-  IResv,
-  TCreateData,
-  createResv,
-  resvsSelector,
-} from "../../store/resv";
+import { IResv, TCreateData, createResv, selectResvs } from "../../store/resv";
 import { useAppDispatch, useAppSelector } from "../../hooks/use-store";
 import dayjs, { Dayjs } from "dayjs";
 import useDateContext from "../../hooks/use-date-context";
+import { selectAllRooms } from "../../store/room";
 
 interface IMonthListItemNew {
   handleReset: (i: number | undefined) => void;
 }
 
 const MonthListItemNew = ({ handleReset }: IMonthListItemNew) => {
-  const { rooms } = useRoomContext();
+  const rooms = useAppSelector(selectAllRooms);
   const { currentDay } = useDateContext();
 
   const [room, setRoom] = useState<IRoom>(rooms[0]);
@@ -33,7 +28,7 @@ const MonthListItemNew = ({ handleReset }: IMonthListItemNew) => {
   const [createError, setCreateError] = useState("");
 
   const dispatch = useAppDispatch();
-  const resvs = useAppSelector(resvsSelector);
+  const resvs = useAppSelector(selectResvs);
 
   const handleTimestart = (e: React.ChangeEvent) => {
     setStartTime((e.target as HTMLInputElement).value);
@@ -99,7 +94,7 @@ const MonthListItemNew = ({ handleReset }: IMonthListItemNew) => {
     <li className='mt-4 border-t pt-2'>
       <div className='flex justify-between'>
         <div className='flex items-center'>
-          <RoomDropDown room={room} handleRoomChange={handleRoom} />
+          <RoomDropDown selectedRoom={room} handleRoomChange={handleRoom} />
         </div>
 
         <div className='flex'>
