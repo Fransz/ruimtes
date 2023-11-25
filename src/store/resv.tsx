@@ -65,12 +65,10 @@ const initialState: TResvsState = resvsAdapter.getInitialState({
 
 export const fetchResvs = rootCreateAsyncThunk<IResvRead[], void>(
   "resvs/fetch",
-  async () => {
-    const { data: resvs } = await axios.get(
-      "http://localhost:3001/resvs?_expand=room"
-    );
-    return resvs;
-  }
+  () =>
+    axios
+      .get("http://localhost:3001/resvs?_expand=room")
+      .then(({ data: resvs }) => resvs)
 );
 
 export const updateResv = rootCreateAsyncThunk<IResvRead, TUpdateData>(
@@ -158,7 +156,6 @@ const resvsSlice = createSlice({
       })
       .addCase(deleteResv.fulfilled, (state, action) => {
         state.status = EStatus.SUCCEEDED;
-        const id = action.payload;
         resvsAdapter.removeOne(state, action.payload);
       })
       .addCase(deleteResv.rejected, (state, _) => {
@@ -170,7 +167,7 @@ const resvsSlice = createSlice({
 
 export const resvsReducer = resvsSlice.reducer;
 
-const { selectAll, selectIds, selectById } = resvsAdapter.getSelectors(
+const { selectAll } = resvsAdapter.getSelectors(
   (state: TRootState) => state.resvs
 );
 
@@ -178,33 +175,40 @@ const { selectAll, selectIds, selectById } = resvsAdapter.getSelectors(
  * A selector for all reservations.
  * The selector selects all reservations as IResv;
  */
-export const selectResvs = createSelector(selectAll, (rs) => {
-  return rs.map((r): IResv => {
-    const startTime = dayjs(
-      `${r.date} ${r.startTime}`,
-      "YYYY-MM-DD HH:mm"
-    ).locale("nl");
-    const endTime = dayjs(`${r.date} ${r.endTime}`, "YYYY-MM-DD HH:mm").locale(
-      "nl"
-    );
-    return {
-      id: r.id,
-      activity: r.activity,
-      room: r.room,
-      startTime,
-      endTime,
-    };
-  });
-});
+export const selectResvs: (s: TRootState) => IResv[] = createSelector(
+  selectAll,
+  (rs) => {
+    return rs.map((r): IResv => {
+      const startTime = dayjs(
+        `${r.date} ${r.startTime}`,
+        "YYYY-MM-DD HH:mm"
+      ).locale("nl");
+      const endTime = dayjs(
+        `${r.date} ${r.endTime}`,
+        "YYYY-MM-DD HH:mm"
+      ).locale("nl");
+      return {
+        id: r.id,
+        activity: r.activity,
+        room: r.room,
+        startTime,
+        endTime,
+      };
+    });
+  }
+);
 
 export const selectResvsByDate = createSelector(
-  [selectResvs, (_, day: number): number => day],
+  [selectResvs, (_, day: number): number =>  day],
   (resvs, day) => resvs.filter((r) => dayjs(day).isSame(r.startTime, "day"))
+  
 );
 
 export const statusSelector = (state: TRootState) => state.resvs.status;
+
 export {
   EStatus,
+  type IResvRead,
   type IResv,
   type IResvWrite,
   type TUpdateData,
