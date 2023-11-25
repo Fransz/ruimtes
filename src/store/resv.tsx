@@ -6,7 +6,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 
-import { type IRoom } from "../context/Room";
+import { type IRoom } from "../store/room";
 import { TRootState } from "./store";
 
 import dayjs, { type Dayjs } from "dayjs";

@@ -1,44 +1,66 @@
-import React  from "react";
+import React from "react";
+import { useCallback, useState } from "react";
+import useDateContext from "../../hooks/use-date-context";
 
-import MonthDay, { NoDay } from "./MonthDay";
-import { IRoom } from "../../context/Room";
+import { IRoom } from "../../store/room";
+import MonthHeader from "./MonthHeader";
+import MonthCalendar from "./MonthCalendar";
+import { Dayjs } from "dayjs";
+import MonthList from "./MonthList";
 
-import dayjs, { Dayjs } from "dayjs";
+const Month = () => {
+  const [filteredRooms, setFilteredRooms] = useState<IRoom[]>([]);
+  const { currentDay, setCurrentDay } = useDateContext();
 
-type TMonth = {
-  month: number;
-  year: number;
-  handleDayClick: (d: Dayjs) => void;
-  handleRoomClick: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void;
-};
+  const handleDayClick: (d: Dayjs) => void = useCallback(
+    (d) => {
+      setFilteredRooms([]);
+      setCurrentDay(d);
+    },
+    [setCurrentDay, setFilteredRooms]
+  );
 
-const Month = ({ month, year, handleDayClick, handleRoomClick }: TMonth) => {
-  const first: Dayjs = dayjs(new Date(year, month, 1));
-  const last: Dayjs = dayjs(first).endOf("month");
+  const handleRoomClick: (e: React.MouseEvent, d: Dayjs, r: IRoom) => void =
+    useCallback(
+      (e, d, r) => {
+        e.stopPropagation();
+        setFilteredRooms([r]);
+        setCurrentDay(d);
+      },
+      [setCurrentDay, setFilteredRooms]
+    );
 
-  const bf: number = first.day() === 0 ? 6 : first.day() - 1;
-  const befores: React.ReactElement[] = Array.from(new Array(bf), (_, i) => (
-    <NoDay key={i} />
-  ));
-
-  let days: React.ReactElement[] = Array.from(new Array(last.date()), (_, i) =>
-    dayjs(first).date(i + 1).valueOf()
-  ).map((d) => (
-    <MonthDay
-      key={d}
-      day={d}
-      handleRoomClick={handleRoomClick}
-      handleDayClick={handleDayClick}
-    />
-  ));
+  const handleClickFilter = (room: IRoom | undefined): void => {
+    if (room === undefined) {
+      setFilteredRooms([]);
+    } else if (filteredRooms.some((r) => r.id === room.id)) {
+      setFilteredRooms(filteredRooms.filter((r) => r.id !== room.id));
+    } else {
+      setFilteredRooms([...filteredRooms, room]);
+    }
+  };
 
   return (
     <>
-      <div className='mb-auto flex w-[80%] flex-row flex-wrap'>
-        {befores}
-        {days}
+      <MonthHeader
+        month={currentDay.format("MMMM")}
+        year={currentDay.format("YYYY")}
+      />
+      <div className='flex'>
+        <MonthCalendar
+          month={currentDay.month()}
+          year={currentDay.year()}
+          handleDayClick={handleDayClick}
+          handleRoomClick={handleRoomClick}
+        />
+        <MonthList
+          key={currentDay.valueOf()}
+          filteredRooms={filteredRooms}
+          handleClickFilter={handleClickFilter}
+        />
       </div>
     </>
   );
 };
+
 export default Month;

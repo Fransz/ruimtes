@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
-import {
-  IResv,
-  TUpdateData,
-  selectResvs,
-  updateResv,
-} from "../../store/resv";
-import { IRoom } from "../../context/Room";
+import { IResv, TUpdateData, selectResvs, updateResv } from "../../store/resv";
+import { IRoom } from "../../store/room";
 
 import RoomDropDown from "../widgets/RoomDropDown";
 import Button from "../widgets/Button";
@@ -72,6 +67,7 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
     if (overlap) return "Overlappende activiteiten";
     return "";
   };
+
   const handleItemSave = () => {
     const date = resv.startTime.format("YYYY-MM-DD");
 
@@ -101,7 +97,7 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
     <li className='mt-4 border-t pt-2'>
       <div className='flex justify-between'>
         <div className='flex items-center'>
-          <RoomDropDown room={room} handleRoomChange={handleRoom} />
+          <RoomDropDown selectedRoom={room} handleRoomChange={handleRoom} />
         </div>
 
         <div className='flex'>
@@ -147,4 +143,3 @@ const MonthListItemEdit = ({ resv, handleReset }: IMonthListItemEdit) => {
 };
 
 export default MonthListItemEdit;
-

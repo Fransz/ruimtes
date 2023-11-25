@@ -1,10 +1,9 @@
 import RoomMarker from "../widgets/RoomMarker";
 import React, { memo } from "react";
 import dayjs, { Dayjs } from "dayjs";
-import useRoomContext from "../../hooks/use-room-context";
-import { IRoom } from "../../context/Room";
 import { useAppSelector } from "../../hooks/use-store";
 import { IResv, selectResvsByDate } from "../../store/resv";
+import { IRoom, selectAllRooms } from "../../store/room";
 
 interface IMonthDay {
   day: number;
@@ -13,17 +12,17 @@ interface IMonthDay {
 }
 
 const MonthDay = memo(({ day, handleDayClick, handleRoomClick }: IMonthDay) => {
-  const { rooms } = useRoomContext();
+  const rooms = useAppSelector(selectAllRooms);
   const dayResvs = useAppSelector((state) => selectResvsByDate(state, day));
 
-  const monthDay = dayjs(day)
+  const monthDay = dayjs(day);
 
   const renderedRooms = rooms
     .filter((r) => dayResvs.some((resv: IResv) => resv.room.id === r.id))
     .map((r) => {
       return (
         <RoomMarker
-          filterHandler={(e) => handleRoomClick(e, monthDay, r)}
+          handleClick={(e) => handleRoomClick(e, monthDay, r)}
           key={r.id}
           room={r}
           className='mx-1 h-4 w-4 rounded-full border'

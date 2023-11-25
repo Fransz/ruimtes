@@ -1,8 +1,9 @@
 import React from "react";
 import RoomMarker from "./RoomMarker";
 import DropDown, { IDropDownItem } from "./DropDown";
-import useRoomContext from "../../hooks/use-room-context";
-import { IRoom } from "../../context/Room";
+import { IRoom } from "../../store/room";
+import { useAppSelector } from "../../hooks/use-store";
+import { selectAllRooms } from "../../store/room";
 
 interface IRoomItem extends IDropDownItem {
   value: IRoom;
@@ -10,11 +11,14 @@ interface IRoomItem extends IDropDownItem {
 
 interface IRoomDropDown {
   handleRoomChange: (room: IRoom) => void;
-  room: IRoom;
+  selectedRoom: IRoom;
 }
 
-const RoomDropDown = ({ handleRoomChange, room }: IRoomDropDown) => {
-  const { rooms } = useRoomContext();
+const RoomDropDown = ({
+  handleRoomChange,
+  selectedRoom: room,
+}: IRoomDropDown) => {
+  const rooms = useAppSelector(selectAllRooms);
   const roomItems = rooms.map((r) => {
     return {
       key: r.id,
@@ -23,7 +27,7 @@ const RoomDropDown = ({ handleRoomChange, room }: IRoomDropDown) => {
         <div className='mx-auto flex items-center px-2'>
           <RoomMarker
             room={r}
-            filterHandler={(e) => e}
+            handleClick={(e) => e}
             className='mx-1 h-4 w-4 rounded-full border'
           />
           <div>{r.name}</div>
@@ -32,7 +36,7 @@ const RoomDropDown = ({ handleRoomChange, room }: IRoomDropDown) => {
     };
   });
 
-  const roomItem =
+  const selectedRoomItem =
     roomItems.find((i) => i.value.id === room.id) ?? roomItems[0];
   const handleRoomItemChange = (r: IDropDownItem): void =>
     handleRoomChange((r as IRoomItem).value);
@@ -40,7 +44,7 @@ const RoomDropDown = ({ handleRoomChange, room }: IRoomDropDown) => {
   return (
     <DropDown
       items={roomItems}
-      selected={roomItem}
+      selected={selectedRoomItem}
       setSelected={handleRoomItemChange}
     />
   );

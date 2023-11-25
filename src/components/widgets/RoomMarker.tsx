@@ -1,14 +1,18 @@
 import classNames from "classnames";
 import React from "react";
-import { IRoom } from "../../context/Room";
+import { IRoom } from "../../store/room";
 
 export interface IRoomMarker {
   room: IRoom;
-  filterHandler: (e: React.MouseEvent<HTMLElement>) => void;
+  handleClick: (e: React.MouseEvent<HTMLElement>) => void;
   [propName: string]: unknown;
 }
 
-const RoomMarker = ({ room, filterHandler, ...rest }: IRoomMarker) => {
+const RoomMarker = ({
+  room,
+  handleClick: filterHandler,
+  ...rest
+}: IRoomMarker) => {
   const cls = classNames((rest as { className: string }).className, {
     "border-brred bg-brred": room.name === "rode kamer",
     "border-brgreen bg-brgreen": room.name === "groene kamer",

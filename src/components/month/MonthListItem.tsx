@@ -18,7 +18,7 @@ const MonthListItem = ({ resv, handleEdit, handleDelete }: IMonthListItem) => {
         <div className='flex items-center'>
           <RoomMarker
             room={resv.room}
-            filterHandler={(e) => e}
+            handleClick={(e) => e}
             className='mx-1 h-4 w-4 rounded-full border'
           />
           <span>{resv!.room.name}</span>
