@@ -1,8 +1,8 @@
 [
     {
-    "id":"1","name": "Bill Smith"
+    "id":1,"firstname": "Bill","lastname": "Smith"
     },
     {
-    "id":"2","name": "Bill Jones"
+    "id":2,"firstname": "Dave","lastname": "Jones"
     }
 ]
