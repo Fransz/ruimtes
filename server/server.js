@@ -6,7 +6,6 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const users = require("./users.json");
 const errorHandler = require("./middleware/error-handler");
 
 const app = express();
@@ -22,6 +21,7 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/root"));
 
+app.use("/register", require("./routes/register"));
 app.use("/employees", require("./routes/api/employees"));
 
 app.all("*", (req, res) => {
