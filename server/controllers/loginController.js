@@ -32,7 +32,7 @@ const loginUser = async (req, res) => {
     { algorithm: "HS256", expiresIn: "1m" }
   );
   const refreshToken = jwt.sign(
-    { user: { name: user, name } },
+    { user: { name: user.name } },
     process.env.REFRESH_TOKEN_SECRET,
     { algorithm: "HS256", expiresIn: "1d" }
   );
@@ -50,4 +50,45 @@ const loginUser = async (req, res) => {
   res.status(200).json({ accessToken });
 };
 
-module.exports = { loginUser };
+const refreshTokens = async (req, res, next) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(401);
+  const refreshToken = cookies.jwt;
+
+  const user = state.users.find((u) => (u.refreshToken = refreshToken));
+  if (!user) return res.sendStatus(403);
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err || user.name !== decoded.user.name) return res.sendStatus(403);
+
+      const accessToken = jwt.sign(
+        { user: { name: user.name } },
+        process.env.ACCESS_TOKEN_SECRET,
+        { algorithm: "HS256", expiresIn: "1m" }
+      );
+      const refreshToken = jwt.sign(
+        { user: { name: user.name } },
+        process.env.REFRESH_TOKEN_SECRET,
+        { algorithm: "HS256", expiresIn: "1d" }
+      );
+
+      console.log("new", refreshToken)
+      const others = state.users.filter((u) => u.name !== user.name);
+      state.setUsers([...others, { ...user, refreshToken }]);
+
+      await fsPromises.writeFile(userFile, JSON.stringify(state.users));
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+        maxAge: 86400,
+      });
+      res.status(200).json({ accessToken });
+    }
+  );
+};
+
+module.exports = { loginUser, refreshTokens };

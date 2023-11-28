@@ -24,6 +24,7 @@ app.use("/", require("./routes/root"));
 
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/login"));
+app.use("/refresh", require("./routes/refresh"));
 
 app.use(verifyToken);
 app.use("/employees", require("./routes/api/employees"));
