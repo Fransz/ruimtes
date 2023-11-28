@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
   if (!name || !pw)
     res.status(400).json({ error: "username and password are required" });
 
-  const dup = state.users.find((u) => u.name == name);
+  const dup = state.users.find((u) => u.name === name);
   if (dup) res.sendStatus(409);
 
   try {

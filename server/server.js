@@ -7,6 +7,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
 const errorHandler = require("./middleware/error-handler");
+const verifyToken = require("./middleware/verifyToken");
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/root"));
 
 app.use("/register", require("./routes/register"));
+app.use("/auth", require("./routes/login"));
+
+app.use(verifyToken);
 app.use("/employees", require("./routes/api/employees"));
 
 app.all("*", (req, res) => {
