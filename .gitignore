@@ -1,6 +1,8 @@
 ./test/*
 resvs.json
 test_db.json
+log
+
 # From https://github.com/facebook/react/blob/main/.gitignore
 
 .DS_STORE

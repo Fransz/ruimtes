@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../hooks/use-store";
 import "react-datepicker/dist/react-datepicker.css"; // css for the datepicker
 import Month from "./month/Month";
 import { fetchRooms } from "../store/room";
+import Test from "./TestServer.jsx"
 
 const App = () => {
   const fetchStatus = useAppSelector(statusSelector);
@@ -37,6 +38,7 @@ const App = () => {
     <>
       {status}
       <Month />
+      <Test />
     </>
   );
 };
