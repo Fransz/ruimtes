@@ -29,7 +29,7 @@ const errorHandler = (err, req, res, next) => {
   console.log("Error logged");
   console.log(err.stack);
 
-  res.status(500).send(err.message);
+  return res.status(500).send(err.message);
 };
 
 module.exports = errorHandler;

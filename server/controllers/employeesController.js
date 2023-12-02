@@ -19,17 +19,17 @@ function addEmployee(req, res) {
   };
 
   if (!nw.firstname || !nw.lastname)
-    res.status(400).json({ error: "firstname and lastname are required" });
+    return res.status(400).json({ error: "firstname and lastname are required" });
 
   state.setEmployees([...state.employees, nw]);
-  res.status(201).json(state.employees);
+  return res.status(201).json(state.employees);
 }
 
 function updateEmployee(req, res) {
   const id = parseInt(req.body.id);
   const employee = state.employees.find((e) => e.id === id);
   if (!employee)
-    res.status(400).json({ error: `Employee id ${id} not found.` });
+    return res.status(400).json({ error: `Employee id ${id} not found.` });
 
   if (req.body.firstname) employee.firstname = req.body.firstname;
   if (req.body.lastname) employee.lastname = req.body.lastname;
@@ -37,27 +37,27 @@ function updateEmployee(req, res) {
   const others = state.employees.filter((e) => e.id !== id);
   const sorted = [...others, employee].sort((e, ee) => e.id - ee.id);
   state.setEmployees(sorted);
-  res.status(200).json(sorted);
+  return res.status(200).json(sorted);
 }
 
 function deleteEmployee(req, res) {
   const id = parseInt(req.body.id);
   const employee = state.employees.find((e) => e.id === id);
   if (!employee)
-    res.status(400).json({ error: `Employee id ${id} not found.` });
+    return res.status(400).json({ error: `Employee id ${id} not found.` });
 
   const others = state.employees.filter((e) => e.id !== id);
   state.setEmployees(others);
-  res.status(200).json(others);
+  return res.status(200).json(others);
 }
 
 function getEmployee(req, res) {
   const id = parseInt(req.params.id);
   const employee = state.employees.find((e) => e.id === id);
   if (!employee)
-    res.status(400).json({ error: `Employee id ${id} not found.` });
+    return res.status(400).json({ error: `Employee id ${id} not found.` });
 
-  res.status(200).json(employee);
+  return res.status(200).json(employee);
 }
 
 module.exports = {

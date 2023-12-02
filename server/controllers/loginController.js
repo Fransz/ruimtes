@@ -18,13 +18,15 @@ const loginUser = async (req, res) => {
   const { name, pw } = req.body;
 
   if (!name || !pw)
-    res.status(400).json({ error: "username and password are required" });
+    return res
+      .status(400)
+      .json({ error: "username and password are required" });
 
   const user = state.users.find((u) => u.name === name);
-  if (!user) res.sendStatus(409);
+  if (!user) return res.sendStatus(401);
 
   const match = bcrypt.compare(pw, user.pw);
-  if (!match) res.sendStatus(401);
+  if (!match) return res.sendStatus(401);
 
   const accessToken = jwt.sign(
     { user: { name: user.name } },
@@ -47,7 +49,7 @@ const loginUser = async (req, res) => {
     secure: true,
     maxAge: 86400,
   });
-  res.status(200).json({ accessToken });
+  return res.status(200).json({ accessToken });
 };
 
 const refreshTokens = async (req, res, next) => {
@@ -69,24 +71,7 @@ const refreshTokens = async (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET,
         { algorithm: "HS256", expiresIn: "1m" }
       );
-      const refreshToken = jwt.sign(
-        { user: { name: user.name } },
-        process.env.REFRESH_TOKEN_SECRET,
-        { algorithm: "HS256", expiresIn: "1d" }
-      );
-
-      console.log("new", refreshToken)
-      const others = state.users.filter((u) => u.name !== user.name);
-      state.setUsers([...others, { ...user, refreshToken }]);
-
-      await fsPromises.writeFile(userFile, JSON.stringify(state.users));
-      res.cookie("jwt", refreshToken, {
-        httpOnly: true,
-        sameSite: "None",
-        secure: true,
-        maxAge: 86400,
-      });
-      res.status(200).json({ accessToken });
+      return res.status(200).json({ accessToken });
     }
   );
 };

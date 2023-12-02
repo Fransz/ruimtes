@@ -15,10 +15,10 @@ const registerUser = async (req, res) => {
   const { name, pw } = req.body;
 
   if (!name || !pw)
-    res.status(400).json({ error: "username and password are required" });
+    return res.status(400).json({ error: "username and password are required" });
 
   const dup = state.users.find((u) => u.name === name);
-  if (dup) res.sendStatus(409);
+  if (dup) return res.sendStatus(409);
 
   try {
     const hashed = await bcrypt.hash(pw, 10);
@@ -30,9 +30,9 @@ const registerUser = async (req, res) => {
     state.setUsers([...state.users, nw]);
 
     await fsPromises.writeFile(userFile, JSON.stringify(state.users));
-    res.status(201).json({ status: "succes" });
+    return res.status(201).json({ status: "succes" });
   } catch (err) {
-    res.status(500).json({ status: "error", error: err.message });
+    return res.status(500).json({ status: "error", error: err.message });
   }
 };
 
